@@ -28,13 +28,15 @@
   header .brand h1 { font-size: 22px; font-weight: 500; color: var(--white); letter-spacing: -.3px; }
   header .brand p  { font-size: 11px; font-weight: 300; color: var(--beige-osc); letter-spacing: .6px; text-transform: uppercase; }
 
-  .sync-btn {
+  .header-right { text-align: right; }
+  .refresh-btn {
     background: transparent; border: 1px solid var(--beige-osc); color: var(--beige-osc);
     font-family: var(--font); font-size: 11px; padding: 8px 16px; border-radius: 40px;
     cursor: pointer; letter-spacing: .4px; transition: all .2s;
   }
-  .sync-btn:hover { background: var(--beige-osc); color: var(--capp); }
-  .sync-btn:disabled { opacity: .5; cursor: default; }
+  .refresh-btn:hover { background: var(--beige-osc); color: var(--capp); }
+  .refresh-btn:disabled { opacity: .5; cursor: default; }
+  .sync-status { font-size: 11px; color: var(--beige-osc); margin-top: 6px; min-height: 16px; }
 
   .filters {
     background: var(--white); padding: 14px 40px;
@@ -51,6 +53,23 @@
   .pill.active, .pill:hover { background: var(--capp); color: var(--white); border-color: var(--capp); }
 
   .main { padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+
+  .loading {
+    text-align: center; padding: 80px 20px; color: var(--beige-osc);
+  }
+  .loading-spinner {
+    width: 32px; height: 32px; border: 2px solid var(--gris);
+    border-top-color: var(--capp); border-radius: 50%;
+    animation: spin .8s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box {
+    background: var(--white); border-radius: var(--radius); padding: 28px 32px;
+    max-width: 480px; margin: 60px auto;
+  }
+  .error-box p { font-size: 13px; color: var(--capp); line-height: 1.7; }
+  .error-box small { color: var(--beige-osc); font-size: 11px; display: block; margin-top: 12px; }
 
   .month-block { margin-bottom: 44px; }
   .month-label {
@@ -71,7 +90,7 @@
   .item-card.comercial { border-left-color: var(--beige-osc); }
   .item-card.marketing { border-left-color: var(--gris); }
   .item-card.hito      { border-left-color: #8a7562; }
-  .item-card.produccion{ border-left-color: var(--beige-clr); border: 1px dashed var(--gris); border-left: 3px solid var(--beige-osc); }
+  .item-card.produccion{ border-left: 3px solid var(--beige-osc); border-top: 1px dashed var(--gris); border-right: 1px dashed var(--gris); border-bottom: 1px dashed var(--gris); }
 
   .card-type { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--beige-osc); margin-bottom: 6px; }
   .card-name { font-size: 14px; font-weight: 500; color: var(--capp); line-height: 1.4; margin-bottom: 8px; }
@@ -79,7 +98,7 @@
 
   .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
   .status-dot.lanzado, .status-dot.ejecutada, .status-dot.listo { background: #6aaa6a; }
-  .status-dot.en-curso, .status-dot.desarrollo { background: #d4a843; }
+  .status-dot.en-curso { background: #d4a843; }
   .status-dot.pendiente { background: var(--gris); }
   .status-dot.pausado   { background: #c0504d; }
 
@@ -124,7 +143,7 @@
   .description-box { font-size: 13px; line-height: 1.7; color: var(--capp); font-weight: 300; }
 
   .budget-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .budget-table th { text-align: left; font-weight: 500; font-size: 11px; color: var(--beige-osc); padding: 7px 10px; background: var(--beige-clr); border-radius: 4px; }
+  .budget-table th { text-align: left; font-weight: 500; font-size: 11px; color: var(--beige-osc); padding: 7px 10px; background: var(--beige-clr); }
   .budget-table td { padding: 10px 10px; border-bottom: 1px solid var(--beige-clr); color: var(--capp); vertical-align: top; }
   .budget-table tr:last-child td { border-bottom: none; }
   .budget-total {
@@ -149,8 +168,6 @@
 
   .empty { text-align: center; padding: 48px 20px; color: var(--beige-osc); font-size: 14px; }
 
-  .sync-status { font-size: 11px; color: var(--beige-osc); margin-top: 6px; }
-
   @media (max-width: 680px) {
     header, .filters, .main { padding-left: 20px; padding-right: 20px; }
     .month-items { grid-template-columns: 1fr; }
@@ -164,23 +181,28 @@
     <h1>hypnos</h1>
     <p>calendario de marketing 2026 – 2027</p>
   </div>
-  <div style="text-align:right">
-    <button class="sync-btn" id="syncBtn" onclick="syncFromSheet()">↻ sincronizar con sheet</button>
+  <div class="header-right">
+    <button class="refresh-btn" id="refreshBtn" onclick="cargarDatos()">↻ actualizar</button>
     <div class="sync-status" id="syncStatus"></div>
   </div>
 </header>
 
 <div class="filters">
   <span>ver</span>
-  <button class="pill active" data-type="all"       onclick="filter('all',this)">todo</button>
-  <button class="pill"        data-type="launch"     onclick="filter('launch',this)">lanzamientos</button>
-  <button class="pill"        data-type="comercial"  onclick="filter('comercial',this)">comerciales</button>
-  <button class="pill"        data-type="marketing"  onclick="filter('marketing',this)">marketing</button>
-  <button class="pill"        data-type="hito"       onclick="filter('hito',this)">hitos de marca</button>
-  <button class="pill"        data-type="produccion" onclick="filter('produccion',this)">producción</button>
+  <button class="pill active" onclick="filter('all',this)">todo</button>
+  <button class="pill"        onclick="filter('launch',this)">lanzamientos</button>
+  <button class="pill"        onclick="filter('comercial',this)">comerciales</button>
+  <button class="pill"        onclick="filter('marketing',this)">marketing</button>
+  <button class="pill"        onclick="filter('hito',this)">hitos de marca</button>
+  <button class="pill"        onclick="filter('produccion',this)">producción</button>
 </div>
 
-<div class="main" id="calendar"></div>
+<div class="main" id="calendar">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <p>Cargando calendario...</p>
+  </div>
+</div>
 
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
@@ -194,237 +216,11 @@
 </div>
 
 <script>
-// ── SHEET URLs (fuente de datos editable) ─────────────────────────────────
-const SHEET = {
-  calendario:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1727714071&single=true&output=csv',
-  presupuesto: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1188195208&single=true&output=csv',
-  checklist:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1575453415&single=true&output=csv',
-};
+// ── APPS SCRIPT URL ───────────────────────────────────────────────────────
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxpxTY_T167JQaW26KXT3LsfPBNRVq_vTxWkfkBnDIf-e8i4BP0A2dqvefvQ3d2Oh2xBw/exec";
 
-// ── DATOS (se actualizan al hacer clic en "sincronizar con sheet") ─────────
-let ITEMS = [
-
-  // ═══════════════ SEPTIEMBRE 2026 ═══════════════
-  { id:'SEP-001', month:'2026-09', type:'hito', name:'Buda Lodge by Hypnos', status:'en-curso',
-    canal:'Instagram, Glampi, redes Buda Lodge', responsable:'Tomás',
-    descripcion:'Alianza con el primer lodge de longevidad de Chile. Buda Lodge tiene cabinas antiaging y marketing vía Glampi y redes propias. Hypnos envía productos y tiene el naming de la cabina ("Sleep Cabin by Hypnos", nombre por definir). El lodge queda disponible como locación para lanzamientos y grabaciones.',
-    notas:'Nombre de la cabina por definir.',
-    budget:[
-      {concepto:'Envío y despacho de productos', monto:0},
-      {concepto:'Fotografía de la cabina', monto:0},
-      {concepto:'Naming y diseño cabina', monto:0},
-    ],
-    checklist:[
-      {t:'Confirmar nombre de la cabina', done:false, resp:'Tomás'},
-      {t:'Coordinar envío de productos al lodge', done:false, resp:'Javi'},
-      {t:'Definir activaciones en redes', done:false, resp:'Tomás'},
-      {t:'Coordinar contenido con equipo Glampi', done:false, resp:'Tomás'},
-    ]
-  },
-  { id:'SEP-002', month:'2026-09', type:'marketing', name:'Sueña tus Sueños', status:'pendiente',
-    canal:'YouTube, TikTok, Meta Ads, Instagram, Tienda física',
-    responsable:'Tomás',
-    descripcion:'Campaña de contenido omnicanal. Concepto paraguas de marca para el período. Activa en YouTube, TikTok, Meta Ads e Instagram. También con pantallas y activaciones en tienda física.',
-    notas:'Campaña paraguas — definir piezas por canal.',
-    budget:[
-      {concepto:'Meta Ads — pauta', monto:0},
-      {concepto:'Producción de piezas creativas', monto:0},
-      {concepto:'TikTok — producción de contenido', monto:0},
-    ],
-    checklist:[
-      {t:'Definir piezas por canal', done:false, resp:'Tomás'},
-      {t:'Aprobar concepto creativo', done:false, resp:'Tomás'},
-      {t:'Producir piezas de contenido', done:false, resp:'Equipo creativo'},
-      {t:'Activar campaña Meta Ads', done:false, resp:'Tomás'},
-    ]
-  },
-  { id:'SEP-003', month:'2026-09', type:'comercial', name:'Fiestas Patrias', status:'pendiente',
-    canal:'Meta Ads, Email, Instagram',
-    responsable:'Tomás',
-    descripcion:'Campaña comercial de Fiestas Patrias. 15–19 septiembre. Descuentos y activaciones de temporada.',
-    notas:'',
-    budget:[
-      {concepto:'Meta Ads', monto:0},
-      {concepto:'Email marketing', monto:0},
-      {concepto:'Piezas creativas', monto:0},
-    ],
-    checklist:[
-      {t:'Definir mecánica y descuentos', done:false, resp:'Tomás / Manuel'},
-      {t:'Preparar piezas creativas', done:false, resp:'Equipo creativo'},
-      {t:'Programar emails', done:false, resp:'Javi'},
-      {t:'Activar Meta Ads', done:false, resp:'Tomás'},
-    ]
-  },
-
-  // ═══════════════ OCTUBRE 2026 ═══════════════
-  { id:'OCT-001', month:'2026-10', type:'launch', name:'Nuevos Colchones (Endless + Embrace + Eternal)',
-    status:'pendiente',
-    canal:'Meta Ads, Instagram, Medios (publinotas), Email',
-    responsable:'Tomás',
-    descripcion:'Renovación de Endless + lanzamiento de dos nuevos colchones: Embrace y Eternal. Campaña completa: video producido por Primate Films con Longton y Kika Silva, publinotas en medios, y plan de medios pagado.',
-    notas:'Coordinar fecha con AMR, Kika y Longton. Validar presupuesto con Agustín. Cotizar plan de medios IG memes.',
-    budget:[
-      {concepto:'Producción video (Primate Films)', monto:0},
-      {concepto:'Tarifa Kika Silva (video colchón)', monto:0},
-      {concepto:'Publinotas en medios', monto:0},
-      {concepto:'Plan de medios Meta Ads', monto:0},
-    ],
-    checklist:[
-      {t:'Confirmar fecha con AMR, Kika y Longton', done:false, resp:'Tomás'},
-      {t:'Validar presupuesto producción con Agustín', done:false, resp:'Tomás'},
-      {t:'Contratar Primate Films', done:false, resp:'Tomás'},
-      {t:'Aprobar guión del video (listo)', done:true, resp:'Tomás'},
-      {t:'Cotizar plan de medios Meta Ads + IG memes', done:false, resp:'Tomás'},
-      {t:'Gestionar publinotas en medios', done:false, resp:'Tomás'},
-    ]
-  },
-  { id:'OCT-002', month:'2026-10', type:'comercial', name:'Cyber Octubre',
-    status:'pendiente',
-    canal:'Meta Ads',
-    responsable:'Tomás',
-    descripcion:'Campaña digital 100% comercial. Foco en conversión directa. Meta Ads como canal principal. Sin componente de marca — bajada de precio y urgencia.',
-    notas:'',
-    budget:[
-      {concepto:'Meta Ads — pauta Cyber Octubre', monto:0},
-      {concepto:'Piezas creativas', monto:0},
-    ],
-    checklist:[
-      {t:'Definir descuentos y mecánica', done:false, resp:'Tomás'},
-      {t:'Preparar piezas creativas Meta Ads', done:false, resp:'Equipo creativo'},
-      {t:'Activar campaña', done:false, resp:'Tomás'},
-    ]
-  },
-  { id:'OCT-003', month:'2026-10', type:'launch', name:'Sábanas algodón/bambú',
-    status:'pendiente',
-    canal:'Instagram, Email, Web',
-    responsable:'Tomás',
-    descripcion:'Lanzamiento de nueva línea de ropa de cama en mezcla algodón/bambú. Nueva propuesta de materiales para el catálogo de Hypnos.',
-    notas:'',
-    budget:[
-      {concepto:'Fotografía producto', monto:0},
-      {concepto:'Meta Ads', monto:0},
-    ],
-    checklist:[
-      {t:'Fotografía de producto', done:false, resp:'Equipo creativo'},
-      {t:'Subir a web y preparar email', done:false, resp:'Javi'},
-    ]
-  },
-  { id:'OCT-004', month:'2026-10', type:'produccion', name:'Sesión foto/video Kika — Pichilemu',
-    status:'pendiente',
-    canal:'Producción interna',
-    responsable:'Tomás',
-    descripcion:'Sesión de producción interna para la campaña Hypnos by Kika. Locación: Pichilemu (Buda Lodge o similar). Foto + video para el lanzamiento de noviembre. No es campaña pública — es la producción del contenido que se usará el mes siguiente.',
-    notas:'Buffer de 3–4 semanas antes del lanzamiento de noviembre. Coordinar con Kika.',
-    budget:[
-      {concepto:'Traslado y alojamiento equipo', monto:0},
-      {concepto:'Fotógrafo / videógrafo', monto:0},
-      {concepto:'Tarifa Kika Silva (sesión)', monto:0},
-    ],
-    checklist:[
-      {t:'Confirmar fecha con Kika', done:false, resp:'Tomás'},
-      {t:'Reservar locación en Pichilemu', done:false, resp:'Tomás'},
-      {t:'Contratar fotógrafo y videógrafo', done:false, resp:'Tomás'},
-      {t:'Preparar productos y outfits para la sesión', done:false, resp:'Javi'},
-    ]
-  },
-
-  // ═══════════════ NOVIEMBRE 2026 ═══════════════
-  { id:'NOV-001', month:'2026-11', type:'marketing', name:'Lanzamiento Hypnos by Kika',
-    status:'pendiente',
-    canal:'Instagram, TikTok, Email, Meta Ads',
-    responsable:'Tomás',
-    descripcion:'Lanzamiento oficial de la alianza Hypnos by Kika. Productos: sábanas de bambú en nuevos colores y pijamas de mujer de bambú en nuevos colores. Campaña con contenido de la sesión de Pichilemu (foto y video). Se lanza antes de Black Friday para generar momentum de marca.',
-    notas:'Depende de que la sesión de octubre esté editada y aprobada. Lanzar primera o segunda semana de noviembre.',
-    budget:[
-      {concepto:'Meta Ads — lanzamiento alianza', monto:0},
-      {concepto:'Edición video sesión Pichilemu', monto:0},
-      {concepto:'Muestras y producto para contenido', monto:0},
-    ],
-    checklist:[
-      {t:'Editar y aprobar contenido sesión Pichilemu', done:false, resp:'Tomás'},
-      {t:'Preparar campaña lanzamiento IG + TikTok', done:false, resp:'Equipo creativo'},
-      {t:'Activar Meta Ads lanzamiento', done:false, resp:'Tomás'},
-      {t:'Enviar email a base de datos', done:false, resp:'Javi'},
-    ]
-  },
-  { id:'NOV-002', month:'2026-11', type:'comercial', name:'Black Friday',
-    status:'pendiente',
-    canal:'Meta Ads, Email, Instagram, Web',
-    responsable:'Tomás',
-    descripcion:'Campaña comercial de Black Friday. ~27 noviembre. Mayor evento de descuentos del año. Se lanza después del momentum generado por el lanzamiento Hypnos by Kika.',
-    notas:'Definir descuentos y mecánica con semanas de anticipación.',
-    budget:[
-      {concepto:'Meta Ads — Black Friday', monto:0},
-      {concepto:'Email marketing', monto:0},
-      {concepto:'Piezas creativas', monto:0},
-    ],
-    checklist:[
-      {t:'Definir descuentos Black Friday', done:false, resp:'Tomás / Manuel'},
-      {t:'Preparar piezas creativas BF', done:false, resp:'Equipo creativo'},
-      {t:'Programar emails pre-BF y BF', done:false, resp:'Javi'},
-      {t:'Activar Meta Ads Black Friday', done:false, resp:'Tomás'},
-    ]
-  },
-  { id:'NOV-003', month:'2026-11', type:'launch', name:'Plumón Cooling',
-    status:'pendiente',
-    canal:'Instagram, Email, Web',
-    responsable:'Tomás',
-    descripcion:'Lanzamiento de nuevo plumón con tecnología de frescura para quienes duermen con calor.',
-    notas:'',
-    budget:[{concepto:'Fotografía producto', monto:0}],
-    checklist:[
-      {t:'Fotografía producto Plumón Cooling', done:false, resp:'Equipo creativo'},
-      {t:'Publicar en web y email', done:false, resp:'Javi'},
-    ]
-  },
-  { id:'NOV-004', month:'2026-11', type:'launch', name:'Pantuflas de verano',
-    status:'pendiente',
-    canal:'Instagram, Web',
-    responsable:'Tomás',
-    descripcion:'Lanzamiento de pantuflas de temporada estival. Complemento liviano para el verano.',
-    notas:'',
-    budget:[{concepto:'Fotografía producto', monto:0}],
-    checklist:[
-      {t:'Fotografía producto pantuflas', done:false, resp:'Equipo creativo'},
-      {t:'Publicar en web', done:false, resp:'Javi'},
-    ]
-  },
-
-  // ═══════════════ DICIEMBRE 2026 ═══════════════
-  { id:'DIC-001', month:'2026-12', type:'comercial', name:'Navidad',
-    status:'pendiente',
-    canal:'Meta Ads, Email, Instagram, Tienda física',
-    responsable:'Tomás',
-    descripcion:'Campaña de fin de año. Foco en regalos, experiencias de sueño y cierre del año. Potencial activación en tienda física.',
-    notas:'Definir si hay regalo con compra u otra mecánica.',
-    budget:[
-      {concepto:'Meta Ads — Navidad', monto:0},
-      {concepto:'Email marketing', monto:0},
-      {concepto:'Activación tienda física', monto:0},
-    ],
-    checklist:[
-      {t:'Definir mecánica Navidad (regalo con compra u otra)', done:false, resp:'Tomás'},
-      {t:'Preparar piezas creativas', done:false, resp:'Equipo creativo'},
-      {t:'Activar Meta Ads', done:false, resp:'Tomás'},
-      {t:'Activación en tienda física', done:false, resp:'Tomás / Javi'},
-    ]
-  },
-  { id:'DIC-002', month:'2026-12', type:'produccion', name:'Sesión 2 alianza Kika',
-    status:'pendiente',
-    canal:'Producción interna',
-    responsable:'Tomás',
-    descripcion:'Segunda sesión de producción de contenido para la alianza Hypnos by Kika. Contenido pensado para el verano 2027.',
-    notas:'Coordinar con Kika. Locación y fecha por definir.',
-    budget:[
-      {concepto:'Traslado y alojamiento equipo', monto:0},
-      {concepto:'Fotógrafo / videógrafo', monto:0},
-    ],
-    checklist:[
-      {t:'Confirmar fecha con Kika para sesión 2', done:false, resp:'Tomás'},
-      {t:'Definir locación y equipo', done:false, resp:'Tomás'},
-    ]
-  },
-];
+// ── DATOS ─────────────────────────────────────────────────────────────────
+let ITEMS = [];
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
 const MONTHS = [
@@ -442,61 +238,135 @@ const TYPE_LABEL = {
   launch:'Lanzamiento', comercial:'Campaña comercial',
   marketing:'Campaña de marketing', hito:'Hito de marca', produccion:'Producción'
 };
+
+// Mapeos desde los valores del Sheet
+const MONTH_MAP = {
+  'Sep 2026':'2026-09','Oct 2026':'2026-10','Nov 2026':'2026-11','Dic 2026':'2026-12',
+  'Ene 2027':'2027-01','Feb 2027':'2027-02','Mar 2027':'2027-03','Abr 2027':'2027-04',
+  'May 2027':'2027-05','Jun 2027':'2027-06','Jul 2027':'2027-07','Ago 2027':'2027-08',
+  'Sep 2027':'2027-09','Oct 2027':'2027-10','Nov 2027':'2027-11','Dic 2027':'2027-12',
+};
+const TYPE_MAP = {
+  'Lanzamiento':'launch','Campaña comercial':'comercial',
+  'Campaña de marketing':'marketing','Hito de marca':'hito','Producción':'produccion'
+};
+const STATUS_MAP = {
+  'Sin empezar':'pendiente','En curso':'en-curso','Listo':'listo','Pausado':'pausado'
+};
 const STATUS_LABEL = {
-  pendiente:'Pendiente','en-curso':'En curso', listo:'Listo',
-  ejecutada:'Ejecutada', lanzado:'Lanzado', pausado:'Pausado', desarrollo:'En desarrollo'
+  pendiente:'Sin empezar','en-curso':'En curso',listo:'Listo',
+  ejecutada:'Ejecutada',lanzado:'Lanzado',pausado:'Pausado'
 };
 
 function clp(n) { return n ? '$'+Number(n).toLocaleString('es-CL') : '—'; }
 
 let activeFilter = 'all';
 
+// ── CARGAR DATOS DESDE APPS SCRIPT ───────────────────────────────────────
+async function cargarDatos() {
+  const btn    = document.getElementById('refreshBtn');
+  const status = document.getElementById('syncStatus');
+  const cal    = document.getElementById('calendar');
+
+  btn.disabled = true;
+  btn.textContent = '↻ cargando…';
+  status.textContent = '';
+
+  if (ITEMS.length === 0) {
+    cal.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando calendario...</p></div>`;
+  }
+
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!data.ok) throw new Error('Respuesta inválida del servidor');
+
+    // Mapear campos del sheet a estructura interna
+    ITEMS = data.items.map(r => ({
+      id:          r.id,
+      month:       MONTH_MAP[r.mes] || r.mes,
+      type:        TYPE_MAP[r.tipo] || 'hito',
+      name:        r.nombre || '',
+      status:      STATUS_MAP[r.estado] || 'pendiente',
+      canal:       r.canales || '',
+      responsable: r.responsable || '',
+      descripcion: r.descripcion || '',
+      notas:       r.notas || '',
+      budget:      (r.budget || []).map(b => ({ concepto: b.concepto, monto: Number(b.monto) || 0 })),
+      checklist:   (r.checklist || []).map(c => ({ t: c.tarea, done: c.done, resp: c.responsable })),
+    }));
+
+    render();
+    const hora = new Date(data.actualizado).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+    status.textContent = 'actualizado ' + hora;
+    status.style.color = '#6aaa6a';
+  } catch(e) {
+    console.error(e);
+    if (ITEMS.length === 0) {
+      cal.innerHTML = `
+        <div class="error-box">
+          <p>No se pudo cargar el calendario desde Google Sheets.</p>
+          <p>Revisa que el Apps Script esté desplegado correctamente y que la URL sea la correcta.</p>
+          <small>Error técnico: ${e.message}</small>
+        </div>`;
+    }
+    status.textContent = 'error al actualizar';
+    status.style.color = '#c0504d';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '↻ actualizar';
+}
+
 // ── RENDER CALENDAR ───────────────────────────────────────────────────────
 function render() {
-  const items = ITEMS.filter(i => activeFilter==='all' || i.type===activeFilter);
+  const items = ITEMS.filter(i => activeFilter === 'all' || i.type === activeFilter);
   let html = '';
   MONTHS.forEach(m => {
-    const mis = items.filter(i=>i.month===m.key);
+    const mis = items.filter(i => i.month === m.key);
     if (!mis.length) return;
     html += `<div class="month-block">
       <div class="month-label">${m.label}</div>
       <div class="month-items">`;
     mis.forEach(item => {
-      const total = item.budget.reduce((s,b)=>s+(b.monto||0),0);
+      const total = item.budget.reduce((s,b) => s + (b.monto||0), 0);
       html += `
         <div class="item-card ${item.type}" onclick="openDrawer('${item.id}')">
-          <div class="card-type">${TYPE_LABEL[item.type]||item.type}</div>
+          <div class="card-type">${TYPE_LABEL[item.type] || item.type}</div>
           <div class="card-name">${item.name}</div>
           <div class="card-meta">
-            <span><span class="status-dot ${item.status}"></span>${STATUS_LABEL[item.status]||item.status}</span>
+            <span><span class="status-dot ${item.status}"></span>${STATUS_LABEL[item.status] || item.status}</span>
             ${total ? `<span class="budget-badge">${clp(total)}</span>` : ''}
           </div>
         </div>`;
     });
     html += `</div></div>`;
   });
-  document.getElementById('calendar').innerHTML = html||'<div class="empty">No hay ítems para este filtro.</div>';
+  document.getElementById('calendar').innerHTML = html || '<div class="empty">No hay ítems para este filtro.</div>';
 }
 
 function filter(type, btn) {
   activeFilter = type;
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   render();
 }
 
 // ── DRAWER ────────────────────────────────────────────────────────────────
 function openDrawer(id) {
-  const item = ITEMS.find(i=>i.id===id); if (!item) return;
-  document.getElementById('d-type').textContent = TYPE_LABEL[item.type]||item.type;
+  const item = ITEMS.find(i => i.id === id);
+  if (!item) return;
+
+  document.getElementById('d-type').textContent = TYPE_LABEL[item.type] || item.type;
   document.getElementById('d-name').textContent = item.name;
   document.getElementById('d-chips').innerHTML = [
-    MONTHS.find(m=>m.key===item.month)?.label||item.month,
-    STATUS_LABEL[item.status]||item.status,
+    MONTHS.find(m => m.key === item.month)?.label || item.month,
+    STATUS_LABEL[item.status] || item.status,
     item.responsable
-  ].map(c=>`<span class="drawer-chip">${c}</span>`).join('');
+  ].map(c => `<span class="drawer-chip">${c}</span>`).join('');
 
-  const total = item.budget.reduce((s,b)=>s+(b.monto||0),0);
+  const total = item.budget.reduce((s,b) => s + (b.monto||0), 0);
   let body = '';
 
   if (item.descripcion) {
@@ -506,31 +376,31 @@ function openDrawer(id) {
 
   body += `<div class="section-title">información</div>
   <div class="info-grid">
-    <div class="info-item"><label>Canal</label><span>${item.canal}</span></div>
-    <div class="info-item"><label>Responsable</label><span>${item.responsable}</span></div>
-    <div class="info-item"><label>Estado</label><span><span class="status-dot ${item.status}"></span> ${STATUS_LABEL[item.status]||item.status}</span></div>
-    <div class="info-item"><label>Período</label><span>${MONTHS.find(m=>m.key===item.month)?.label||item.month}</span></div>
+    <div class="info-item"><label>Canal</label><span>${item.canal || '—'}</span></div>
+    <div class="info-item"><label>Responsable</label><span>${item.responsable || '—'}</span></div>
+    <div class="info-item"><label>Estado</label><span><span class="status-dot ${item.status}"></span> ${STATUS_LABEL[item.status] || item.status}</span></div>
+    <div class="info-item"><label>Período</label><span>${MONTHS.find(m => m.key === item.month)?.label || item.month}</span></div>
   </div>`;
 
   body += `<div class="section-title">presupuesto</div>`;
   if (item.budget.length) {
     body += `<table class="budget-table">
       <tr><th>Concepto</th><th style="text-align:right">Monto</th></tr>`;
-    item.budget.forEach(b=>{
+    item.budget.forEach(b => {
       body += `<tr><td>${b.concepto}</td><td style="text-align:right">${clp(b.monto)}</td></tr>`;
     });
-    body += `</table><div class="budget-total"><span>Total</span><span class="amount">${clp(total)||'—'}</span></div>`;
+    body += `</table><div class="budget-total"><span>Total</span><span class="amount">${clp(total)}</span></div>`;
   } else {
-    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin presupuesto cargado. Editar en Google Sheet.</div>`;
+    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin presupuesto cargado. Agregar en Google Sheet.</div>`;
   }
 
   if (item.checklist?.length) {
-    const done = item.checklist.filter(c=>c.done).length;
+    const done = item.checklist.filter(c => c.done).length;
     body += `<div class="section-title">checklist (${done}/${item.checklist.length})</div><ul class="checklist">`;
-    item.checklist.forEach(c=>{
+    item.checklist.forEach(c => {
       body += `<li>
-        <span class="check-icon ${c.done?'done':''}">${c.done?'✓':''}</span>
-        <span>${c.t}${c.resp?` <span style="color:var(--beige-osc);font-size:11px">— ${c.resp}</span>`:''}</span>
+        <span class="check-icon ${c.done ? 'done' : ''}">${c.done ? '✓' : ''}</span>
+        <span>${c.t}${c.resp ? ` <span style="color:var(--beige-osc);font-size:11px">— ${c.resp}</span>` : ''}</span>
       </li>`;
     });
     body += `</ul>`;
@@ -551,80 +421,10 @@ function closeDrawer() {
   document.getElementById('drawer').classList.remove('open');
 }
 
-// ── SYNC DESDE SHEET ─────────────────────────────────────────────────────
-function parseCSV(text) {
-  const lines = text.replace(/\r/g,'').split('\n');
-  const headers = splitLine(lines[0]);
-  return lines.slice(1).filter(l=>l.trim()).map(l=>{
-    const v = splitLine(l), obj={};
-    headers.forEach((h,i)=>obj[h.trim()]=(v[i]||'').trim().replace(/^"|"$/g,''));
-    return obj;
-  });
-}
-function splitLine(line) {
-  const r=[]; let c='', q=false;
-  for(let i=0;i<line.length;i++){
-    if(line[i]==='"'){q=!q;}
-    else if(line[i]===','&&!q){r.push(c);c='';}
-    else c+=line[i];
-  }
-  r.push(c); return r;
-}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
-async function syncFromSheet() {
-  const btn = document.getElementById('syncBtn');
-  const status = document.getElementById('syncStatus');
-  btn.disabled = true; btn.textContent = '↻ sincronizando…';
-  status.textContent = '';
-  try {
-    const [calRows, presRows, chkRows] = await Promise.all([
-      fetch(SHEET.calendario).then(r=>r.text()).then(parseCSV),
-      fetch(SHEET.presupuesto).then(r=>r.text()).then(parseCSV),
-      fetch(SHEET.checklist).then(r=>r.text()).then(parseCSV),
-    ]);
-
-    ITEMS = calRows.filter(r=>r.id).map(r=>{
-      const monthMap = {
-        'Sep 2026':'2026-09','Oct 2026':'2026-10','Nov 2026':'2026-11','Dic 2026':'2026-12',
-        'Ene 2027':'2027-01','Feb 2027':'2027-02','Mar 2027':'2027-03','Abr 2027':'2027-04',
-        'May 2027':'2027-05','Jun 2027':'2027-06','Jul 2027':'2027-07','Ago 2027':'2027-08',
-        'Sep 2027':'2027-09','Oct 2027':'2027-10','Nov 2027':'2027-11','Dic 2027':'2027-12',
-      };
-      const typeMap = {
-        'Lanzamiento':'launch','Campaña comercial':'comercial',
-        'Campaña de marketing':'marketing','Hito de marca':'hito','Producción':'produccion'
-      };
-      const statusMap = {
-        'Sin empezar':'pendiente','En curso':'en-curso','Listo':'listo','Pausado':'pausado'
-      };
-      return {
-        id: r.id,
-        month: monthMap[r.mes] || '2026-09',
-        type: typeMap[r.tipo] || 'hito',
-        name: r.nombre || '',
-        status: statusMap[r.estado] || 'pendiente',
-        canal: r.canales || '',
-        responsable: r.responsable || '',
-        descripcion: r.descripcion || '',
-        notas: r.notas || '',
-        budget: presRows.filter(p=>p.id===r.id).map(p=>({concepto:p.concepto, monto:parseFloat(p.monto)||0})),
-        checklist: chkRows.filter(c=>c.id===r.id).map(c=>({t:c.tarea, done:c.hecho==='TRUE', resp:c.responsable})),
-      };
-    });
-
-    render();
-    status.textContent = 'sincronizado ' + new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-    status.style.color = '#6aaa6a';
-  } catch(e) {
-    status.textContent = 'error al sincronizar — revisa conexión o publicación de la Sheet';
-    status.style.color = '#c0504d';
-    console.error(e);
-  }
-  btn.disabled = false; btn.textContent = '↻ sincronizar con sheet';
-}
-
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
-render();
+// Cargar al abrir la página
+cargarDatos();
 </script>
 </body>
 </html>
