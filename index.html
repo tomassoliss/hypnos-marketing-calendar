@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hypnos · Calendario Marketing 2026–2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cappuccino: #28211C;
+      --beige-light: #EAE6E3;
+      --beige-mid: #B3AAA1;
+      --gris: #BDBAB7;
+      --white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', Arial, sans-serif;
+      background: var(--beige-light);
+      color: var(--cappuccino);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--cappuccino);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--beige-light);
+      letter-spacing: 0.01em;
+    }
+    .logo small {
+      display: block;
+      font-size: 10px;
+      color: var(--beige-mid);
+      letter-spacing: 0.1em;
+      font-weight: 300;
+      margin-top: 3px;
+    }
+    .header-subtitle {
+      font-size: 12px;
+      color: var(--beige-mid);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── LEGEND ── */
+    .legend {
+      background: var(--white);
+      padding: 14px 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--beige-light);
+    }
+    .legend-label {
+      font-size: 10px;
+      color: var(--beige-mid);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 52px 32px;
+    }
+
+    /* ── MONTH ── */
+    .month-section { margin-bottom: 60px; }
+
+    .month-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gris);
+    }
+
+    .month-name {
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .month-count {
+      font-size: 12px;
+      color: var(--beige-mid);
+      font-weight: 300;
+    }
+
+    /* ── CARDS ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 20px 22px 18px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--beige-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 33, 28, 0.08);
+    }
+
+    .card-type { margin-bottom: 10px; }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.35;
+      margin-bottom: 5px;
+    }
+
+    .card-dates {
+      font-size: 11px;
+      color: var(--beige-mid);
+      font-weight: 300;
+      margin-bottom: 14px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-canales {
+      font-size: 10px;
+      color: var(--beige-mid);
+      max-width: 68%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* ── OVERLAY + PANEL ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(40, 33, 28, 0.3);
+      z-index: 100;
+      backdrop-filter: blur(2px);
+    }
+    .overlay.open { display: block; }
+
+    .panel {
+      position: fixed;
+      top: 0;
+      right: -500px;
+      width: 500px;
+      height: 100vh;
+      background: var(--white);
+      z-index: 101;
+      overflow-y: auto;
+      transition: right 0.28s cubic-bezier(.4,0,.2,1);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel.open { right: 0; }
+
+    .panel-header {
+      background: var(--cappuccino);
+      padding: 32px 28px 26px;
+      position: sticky;
+      top: 0;
+      flex-shrink: 0;
+    }
+
+    .panel-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--beige-mid);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      border-radius: 6px;
+      transition: color 0.15s;
+    }
+    .panel-close:hover { color: var(--white); }
+
+    .panel-tipo { margin-bottom: 10px; }
+
+    .panel-name {
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .panel-dates {
+      font-size: 12px;
+      color: var(--beige-mid);
+      font-weight: 300;
+    }
+
+    .panel-body { padding: 28px 28px 48px; }
+
+    .section { margin-bottom: 28px; }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--beige-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 10px;
+    }
+
+    .divider { height: 1px; background: var(--beige-light); margin-bottom: 28px; }
+
+    .desc {
+      font-size: 13px;
+      color: var(--cappuccino);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .meta-item label {
+      display: block;
+      font-size: 10px;
+      color: var(--beige-mid);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+    .meta-item span { font-size: 13px; font-weight: 400; }
+
+    /* Budget */
+    .budget-table { width: 100%; border-collapse: collapse; }
+    .budget-table th {
+      text-align: left;
+      font-size: 10px;
+      color: var(--beige-mid);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--beige-light);
+    }
+    .budget-table td {
+      padding: 10px 0;
+      font-size: 12px;
+      border-bottom: 1px solid var(--beige-light);
+      vertical-align: top;
+      color: var(--cappuccino);
+    }
+    .budget-table td.right { text-align: right; }
+    .budget-table td.muted { color: var(--beige-mid); }
+
+    .budget-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .empty-msg { font-size: 12px; color: var(--beige-mid); font-weight: 300; }
+
+    /* Checklist */
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--beige-light);
+    }
+    .check-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--gris);
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .check-box.done { background: var(--cappuccino); border-color: var(--cappuccino); color: white; }
+    .check-text { font-size: 12px; line-height: 1.5; }
+    .check-text.done { color: var(--beige-mid); text-decoration: line-through; }
+    .check-sub { font-size: 10px; color: var(--beige-mid); margin-top: 2px; }
+
+    .notas { font-size: 12px; color: var(--beige-mid); font-style: italic; line-height: 1.7; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 100px 24px; color: var(--beige-mid); font-weight: 300; font-size: 14px; }
+
+    @media (max-width: 640px) {
+      header { padding: 20px 20px; }
+      .legend { padding: 12px 20px; }
+      main { padding: 32px 16px; }
+      .panel { width: 100%; right: -100%; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">hypnos<small>healing sleep</small></div>
+  <div class="header-subtitle">calendario marketing 2026–2027</div>
+</header>
+
+<div class="legend">
+  <span class="legend-label">tipo</span>
+  <span class="badge" style="background:#28211C;color:#EAE6E3;">Lanzamiento</span>
+  <span class="badge" style="background:#B3AAA1;color:#28211C;">Campaña comercial</span>
+  <span class="badge" style="background:#EAE6E3;color:#28211C;border:1px solid #BDBAB7;">Campaña de marketing</span>
+  <span class="badge" style="background:#FFFFFF;color:#28211C;border:1px solid #28211C;">Hito de marca</span>
+  <span class="badge" style="background:#BDBAB7;color:#28211C;">Producción</span>
+</div>
+
+<main id="main">
+  <div class="loading">cargando calendario…</div>
+</main>
+
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+
+<div class="panel" id="panel">
+  <div class="panel-header">
+    <button class="panel-close" onclick="closePanel()">×</button>
+    <div class="panel-tipo" id="p-tipo"></div>
+    <div class="panel-name" id="p-name"></div>
+    <div class="panel-dates" id="p-dates"></div>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</div>
+
+<script>
+const URLS = {
+  calendario:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1727714071&single=true&output=csv',
+  presupuesto: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1188195208&single=true&output=csv',
+  checklist:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1575453415&single=true&output=csv',
+};
+
+const TYPE_STYLE = {
+  'Lanzamiento':          { bg:'#28211C', color:'#EAE6E3', border:'' },
+  'Campaña comercial':    { bg:'#B3AAA1', color:'#28211C', border:'' },
+  'Campaña de marketing': { bg:'#EAE6E3', color:'#28211C', border:'1px solid #BDBAB7' },
+  'Hito de marca':        { bg:'#FFFFFF', color:'#28211C', border:'1px solid #28211C' },
+  'Producción':           { bg:'#BDBAB7', color:'#28211C', border:'' },
+};
+
+const STATUS = {
+  'Sin empezar': { color:'#BDBAB7', bg:'#F4F3F2' },
+  'En curso':    { color:'#8B6914', bg:'#FDF4E3' },
+  'Listo':       { color:'#3A6B3E', bg:'#EBF4EC' },
+  'Pausado':     { color:'#8B3A3A', bg:'#F9ECEC' },
+};
+
+const MONTH_ORDER = ['Sep 2026','Oct 2026','Nov 2026','Dic 2026','Ene 2027','Feb 2027','Mar 2027','Abr 2027','May 2027','Jun 2027','Jul 2027','Ago 2027','Sep 2027','Oct 2027','Nov 2027','Dic 2027'];
+
+let cal = [], pres = [], chk = [];
+
+function parseCSV(text) {
+  const lines = text.replace(/\r/g,'').split('\n');
+  const headers = splitLine(lines[0]);
+  return lines.slice(1).filter(l => l.trim()).map(l => {
+    const vals = splitLine(l);
+    const obj = {};
+    headers.forEach((h,i) => obj[h.trim()] = (vals[i]||'').trim().replace(/^"|"$/g,''));
+    return obj;
+  });
+}
+
+function splitLine(line) {
+  const res = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQ = !inQ; }
+    else if (line[i] === ',' && !inQ) { res.push(cur); cur = ''; }
+    else cur += line[i];
+  }
+  res.push(cur);
+  return res;
+}
+
+function money(v) {
+  const n = parseFloat((v||'').replace(/[^0-9.-]/g,''));
+  if (!n || isNaN(n)) return '—';
+  return '$ ' + n.toLocaleString('es-CL');
+}
+
+function badgeHtml(tipo) {
+  const s = TYPE_STYLE[tipo] || { bg:'#EAE6E3', color:'#28211C', border:'' };
+  return `<span class="badge" style="background:${s.bg};color:${s.color};${s.border?'border:'+s.border:''}">${tipo||'—'}</span>`;
+}
+
+async function get(url) {
+  const r = await fetch(url); return parseCSV(await r.text());
+}
+
+async function init() {
+  try {
+    [cal, pres, chk] = await Promise.all([get(URLS.calendario), get(URLS.presupuesto), get(URLS.checklist)]);
+    render();
+  } catch(e) {
+    document.getElementById('main').innerHTML = '<div class="loading">error al cargar los datos. verifica que la Sheet esté publicada.</div>';
+  }
+}
+
+function render() {
+  const byMonth = {};
+  cal.forEach(r => { if (r.id) { (byMonth[r.mes] = byMonth[r.mes]||[]).push(r); } });
+
+  const sorted = Object.keys(byMonth).sort((a,b) => {
+    const ai = MONTH_ORDER.indexOf(a), bi = MONTH_ORDER.indexOf(b);
+    return (ai<0?99:ai)-(bi<0?99:bi);
+  });
+
+  document.getElementById('main').innerHTML = sorted.map(mes => {
+    const items = byMonth[mes];
+    const cards = items.map(item => {
+      const st = STATUS[item.estado] || STATUS['Sin empezar'];
+      return `
+        <div class="card" onclick="openPanel('${item.id}')">
+          <div class="card-type">${badgeHtml(item.tipo)}</div>
+          <div class="card-name">${item.nombre}</div>
+          <div class="card-dates">${item.fecha_inicio}${item.fecha_fin && item.fecha_fin!==item.fecha_inicio?' → '+item.fecha_fin:''}</div>
+          <div class="card-footer">
+            <div class="card-canales">${item.canales||''}</div>
+            <span class="status-pill" style="color:${st.color};background:${st.bg}">
+              <span class="status-dot" style="background:${st.color}"></span>${item.estado}
+            </span>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="month-section">
+        <div class="month-header">
+          <div class="month-name">${mes.toLowerCase()}</div>
+          <div class="month-count">${items.length} ${items.length===1?'ítem':'ítems'}</div>
+        </div>
+        <div class="cards-grid">${cards}</div>
+      </div>`;
+  }).join('');
+}
+
+function openPanel(id) {
+  const item = cal.find(r => r.id===id); if (!item) return;
+  const itemPres = pres.filter(r => r.id===id);
+  const itemChk  = chk.filter(r => r.id===id);
+
+  document.getElementById('p-tipo').innerHTML = badgeHtml(item.tipo);
+  document.getElementById('p-name').textContent = item.nombre;
+  document.getElementById('p-dates').textContent = item.fecha_inicio + (item.fecha_fin && item.fecha_fin!==item.fecha_inicio?' → '+item.fecha_fin:'');
+
+  const st = STATUS[item.estado] || STATUS['Sin empezar'];
+
+  let html = '';
+
+  // Descripción
+  if (item.descripcion) {
+    html += `<div class="section">
+      <div class="section-title">descripción</div>
+      <div class="desc">${item.descripcion}</div>
+    </div><div class="divider"></div>`;
+  }
+
+  // Meta
+  html += `<div class="section">
+    <div class="meta-grid">
+      <div class="meta-item"><label>responsable</label><span>${item.responsable||'—'}</span></div>
+      <div class="meta-item"><label>estado</label><span style="color:${st.color};font-weight:500">${item.estado||'—'}</span></div>
+      <div class="meta-item" style="grid-column:1/-1"><label>canales</label><span>${item.canales||'—'}</span></div>
+    </div>
+  </div><div class="divider"></div>`;
+
+  // Presupuesto
+  html += `<div class="section"><div class="section-title">presupuesto</div>`;
+  if (itemPres.length) {
+    let total = 0;
+    html += `<table class="budget-table">
+      <thead><tr><th>concepto</th><th>proveedor</th><th>estado pago</th><th style="text-align:right">monto</th></tr></thead><tbody>`;
+    itemPres.forEach(p => {
+      const n = parseFloat((p.monto||'').replace(/[^0-9.-]/g,''))||0;
+      total += n;
+      html += `<tr>
+        <td>${p.concepto}</td>
+        <td class="muted">${p.proveedor||'—'}</td>
+        <td class="muted">${p.estado_pago||'—'}</td>
+        <td class="right">${money(p.monto)}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>
+    <div class="budget-total"><span>total</span><span>${total>0?money(String(total)): '—'}</span></div>`;
+  } else {
+    html += `<div class="empty-msg">sin presupuesto cargado aún.</div>`;
+  }
+  html += `</div><div class="divider"></div>`;
+
+  // Checklist
+  html += `<div class="section"><div class="section-title">checklist</div>`;
+  if (itemChk.length) {
+    html += itemChk.map(c => {
+      const done = c.hecho==='TRUE';
+      return `<div class="check-item">
+        <div class="check-box ${done?'done':''}">${done?'✓':''}</div>
+        <div>
+          <div class="check-text ${done?'done':''}">${c.tarea}</div>
+          ${c.responsable?`<div class="check-sub">${c.responsable}${c.fecha_limite?' · '+c.fecha_limite:''}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    html += `<div class="empty-msg">sin tareas cargadas aún.</div>`;
+  }
+  html += `</div>`;
+
+  // Notas
+  if (item.notas) {
+    html += `<div class="divider"></div>
+    <div class="section">
+      <div class="section-title">notas</div>
+      <div class="notas">${item.notas}</div>
+    </div>`;
+  }
+
+  document.getElementById('p-body').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('panel').scrollTop = 0;
+}
+
+function closePanel() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('panel').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key==='Escape') closePanel(); });
+
+init();
+</script>
+</body>
+</html>
