@@ -284,17 +284,18 @@ async function cargarDatos() {
 
     // Mapear campos del sheet a estructura interna
     ITEMS = data.items.map(r => ({
-      id:          r.id,
-      month:       MONTH_MAP[r.mes] || r.mes,
-      type:        TYPE_MAP[r.tipo] || 'hito',
-      name:        r.nombre || '',
-      status:      STATUS_MAP[r.estado] || 'pendiente',
-      canal:       r.canales || '',
-      responsable: r.responsable || '',
-      descripcion: r.descripcion || '',
-      notas:       r.notas || '',
-      budget:      (r.budget || []).map(b => ({ concepto: b.concepto, monto: Number(b.monto) || 0 })),
-      checklist:   (r.checklist || []).map(c => ({ t: c.tarea, done: c.done, resp: c.responsable })),
+      id:           r.id,
+      month:        MONTH_MAP[r.mes] || r.mes,
+      type:         TYPE_MAP[r.tipo] || 'hito',
+      name:         r.nombre || '',
+      status:       STATUS_MAP[r.estado] || 'pendiente',
+      canal:        r.canales || '',
+      responsable:  r.responsable || '',
+      descripcion:  r.descripcion || '',
+      notas:        r.notas || '',
+      checklist:    (r.checklist || []).map(c => ({ t: c.tarea, done: c.done, resp: c.responsable })),
+      gastosReales: r.gastosReales || [],
+      totalRealMes: r.totalRealMes || 0,
     }));
 
     render();
@@ -330,14 +331,13 @@ function render() {
       <div class="month-label">${m.label}</div>
       <div class="month-items">`;
     mis.forEach(item => {
-      const total = item.budget.reduce((s,b) => s + (b.monto||0), 0);
       html += `
         <div class="item-card ${item.type}" onclick="openDrawer('${item.id}')">
           <div class="card-type">${TYPE_LABEL[item.type] || item.type}</div>
           <div class="card-name">${item.name}</div>
           <div class="card-meta">
             <span><span class="status-dot ${item.status}"></span>${STATUS_LABEL[item.status] || item.status}</span>
-            ${total ? `<span class="budget-badge">${clp(total)}</span>` : ''}
+            ${item.totalRealMes ? `<span class="budget-badge">${clp(item.totalRealMes)}</span>` : ''}
           </div>
         </div>`;
     });
@@ -366,7 +366,6 @@ function openDrawer(id) {
     item.responsable
   ].map(c => `<span class="drawer-chip">${c}</span>`).join('');
 
-  const total = item.budget.reduce((s,b) => s + (b.monto||0), 0);
   let body = '';
 
   if (item.descripcion) {
@@ -382,16 +381,28 @@ function openDrawer(id) {
     <div class="info-item"><label>Período</label><span>${MONTHS.find(m => m.key === item.month)?.label || item.month}</span></div>
   </div>`;
 
-  body += `<div class="section-title">presupuesto</div>`;
-  if (item.budget.length) {
+  // Gastos reales del mes (desde presupuesto Sheet)
+  body += `<div class="section-title">gasto real del mes</div>`;
+  if (item.gastosReales && item.gastosReales.length) {
     body += `<table class="budget-table">
-      <tr><th>Concepto</th><th style="text-align:right">Monto</th></tr>`;
-    item.budget.forEach(b => {
-      body += `<tr><td>${b.concepto}</td><td style="text-align:right">${clp(b.monto)}</td></tr>`;
+      <tr><th>Ítem</th><th>Categoría</th><th>Tipo</th><th style="text-align:right">Monto</th></tr>`;
+    item.gastosReales.forEach(g => {
+      const monto = g.tipo === 'Canje' && g.costoNeto > 0 ? g.costoNeto : g.monto;
+      const tipoTag = g.tipo === 'Canje'
+        ? `<span style="font-size:10px;background:var(--beige-clr);padding:2px 7px;border-radius:20px;color:var(--beige-osc)">canje</span>`
+        : '';
+      const estadoColor = g.estado === 'Pagado' ? 'var(--capp)' : 'var(--beige-osc)';
+      body += `<tr>
+        <td>${g.item}${g.detalle ? `<br><span style="font-size:11px;color:var(--beige-osc)">${g.detalle}</span>` : ''}</td>
+        <td style="font-size:11px;color:var(--beige-osc)">${g.categoria || '—'}</td>
+        <td>${tipoTag}</td>
+        <td style="text-align:right;color:${estadoColor};font-weight:500">${clp(monto)}</td>
+      </tr>`;
     });
-    body += `</table><div class="budget-total"><span>Total</span><span class="amount">${clp(total)}</span></div>`;
+    body += `</table>
+    <div class="budget-total"><span>Total mes</span><span class="amount">${clp(item.totalRealMes)}</span></div>`;
   } else {
-    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin presupuesto cargado. Agregar en Google Sheet.</div>`;
+    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin gastos registrados para este mes en el presupuesto.</div>`;
   }
 
   if (item.checklist?.length) {
