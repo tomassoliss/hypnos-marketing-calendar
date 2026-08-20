@@ -1,594 +1,630 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hypnos · Calendario Marketing 2026–2027</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --cappuccino: #28211C;
-      --beige-light: #EAE6E3;
-      --beige-mid: #B3AAA1;
-      --gris: #BDBAB7;
-      --white: #FFFFFF;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hypnos — Calendario Marketing 2026–2027</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --white:     #FFFFFF;
+    --beige-clr: #EAE6E3;
+    --beige-osc: #B3AAA1;
+    --gris:      #BDBAB7;
+    --capp:      #28211C;
+    --font:      'DM Sans', Arial, sans-serif;
+    --radius:    14px;
+    --shadow:    0 4px 24px rgba(40,33,28,.10);
+  }
+  body { font-family: var(--font); background: var(--beige-clr); color: var(--capp); min-height: 100vh; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  header {
+    background: var(--capp);
+    padding: 28px 40px 24px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
+  }
+  header .brand { display: flex; flex-direction: column; gap: 4px; }
+  header .brand h1 { font-size: 22px; font-weight: 500; color: var(--white); letter-spacing: -.3px; }
+  header .brand p  { font-size: 11px; font-weight: 300; color: var(--beige-osc); letter-spacing: .6px; text-transform: uppercase; }
 
-    body {
-      font-family: 'DM Sans', Arial, sans-serif;
-      background: var(--beige-light);
-      color: var(--cappuccino);
-      min-height: 100vh;
-    }
+  .sync-btn {
+    background: transparent; border: 1px solid var(--beige-osc); color: var(--beige-osc);
+    font-family: var(--font); font-size: 11px; padding: 8px 16px; border-radius: 40px;
+    cursor: pointer; letter-spacing: .4px; transition: all .2s;
+  }
+  .sync-btn:hover { background: var(--beige-osc); color: var(--capp); }
+  .sync-btn:disabled { opacity: .5; cursor: default; }
 
-    /* ── HEADER ── */
-    header {
-      background: var(--cappuccino);
-      padding: 28px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  .filters {
+    background: var(--white); padding: 14px 40px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--beige-clr);
+    position: sticky; top: 0; z-index: 10; flex-wrap: wrap;
+  }
+  .filters span { font-size: 11px; color: var(--beige-osc); text-transform: uppercase; letter-spacing: .5px; margin-right: 4px; }
+  .pill {
+    padding: 5px 14px; border-radius: 40px; border: 1px solid var(--gris);
+    font-size: 12px; cursor: pointer; background: transparent; font-family: var(--font);
+    color: var(--capp); transition: all .15s;
+  }
+  .pill.active, .pill:hover { background: var(--capp); color: var(--white); border-color: var(--capp); }
 
-    .logo {
-      font-size: 22px;
-      font-weight: 500;
-      color: var(--beige-light);
-      letter-spacing: 0.01em;
-    }
-    .logo small {
-      display: block;
-      font-size: 10px;
-      color: var(--beige-mid);
-      letter-spacing: 0.1em;
-      font-weight: 300;
-      margin-top: 3px;
-    }
-    .header-subtitle {
-      font-size: 12px;
-      color: var(--beige-mid);
-      font-weight: 300;
-      letter-spacing: 0.05em;
-    }
+  .main { padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
 
-    /* ── LEGEND ── */
-    .legend {
-      background: var(--white);
-      padding: 14px 48px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      border-bottom: 1px solid var(--beige-light);
-    }
-    .legend-label {
-      font-size: 10px;
-      color: var(--beige-mid);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-right: 6px;
-    }
+  .month-block { margin-bottom: 44px; }
+  .month-label {
+    font-size: 13px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--beige-osc); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .month-label::after { content: ''; flex: 1; height: 1px; background: var(--gris); }
+  .month-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 12px; }
 
-    /* ── BADGES ── */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
+  .item-card {
+    background: var(--white); border-radius: var(--radius);
+    padding: 18px 20px; cursor: pointer; transition: transform .15s, box-shadow .15s;
+    border-left: 3px solid transparent;
+  }
+  .item-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .item-card.launch    { border-left-color: var(--capp); }
+  .item-card.comercial { border-left-color: var(--beige-osc); }
+  .item-card.marketing { border-left-color: var(--gris); }
+  .item-card.hito      { border-left-color: #8a7562; }
+  .item-card.produccion{ border-left-color: var(--beige-clr); border: 1px dashed var(--gris); border-left: 3px solid var(--beige-osc); }
 
-    /* ── MAIN ── */
-    main {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 52px 32px;
-    }
+  .card-type { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--beige-osc); margin-bottom: 6px; }
+  .card-name { font-size: 14px; font-weight: 500; color: var(--capp); line-height: 1.4; margin-bottom: 8px; }
+  .card-meta { font-size: 12px; color: var(--beige-osc); display: flex; align-items: center; justify-content: space-between; }
 
-    /* ── MONTH ── */
-    .month-section { margin-bottom: 60px; }
+  .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
+  .status-dot.lanzado, .status-dot.ejecutada, .status-dot.listo { background: #6aaa6a; }
+  .status-dot.en-curso, .status-dot.desarrollo { background: #d4a843; }
+  .status-dot.pendiente { background: var(--gris); }
+  .status-dot.pausado   { background: #c0504d; }
 
-    .month-header {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--gris);
-    }
+  .budget-badge { font-size: 11px; background: var(--beige-clr); padding: 3px 9px; border-radius: 20px; color: var(--capp); font-weight: 500; }
 
-    .month-name {
-      font-size: 24px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-    }
+  .overlay {
+    position: fixed; inset: 0; background: rgba(40,33,28,.35); z-index: 100;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .overlay.open { opacity: 1; pointer-events: all; }
 
-    .month-count {
-      font-size: 12px;
-      color: var(--beige-mid);
-      font-weight: 300;
-    }
+  .drawer {
+    position: fixed; right: 0; top: 0; bottom: 0; width: min(520px,95vw);
+    background: var(--white); z-index: 101;
+    transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto; display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
 
-    /* ── CARDS ── */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 14px;
-    }
+  .drawer-header { background: var(--capp); padding: 28px 28px 24px; position: sticky; top: 0; z-index: 2; }
+  .drawer-close {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(255,255,255,.12); border: none; color: var(--white);
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .15s;
+  }
+  .drawer-close:hover { background: rgba(255,255,255,.22); }
+  .drawer-type { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--beige-osc); margin-bottom: 8px; }
+  .drawer-name { font-size: 20px; font-weight: 500; color: var(--white); line-height: 1.3; margin-bottom: 12px; padding-right: 36px; }
+  .drawer-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .drawer-chip { font-size: 11px; padding: 4px 12px; border-radius: 20px; background: rgba(255,255,255,.10); color: var(--beige-clr); }
 
-    .card {
-      background: var(--white);
-      border-radius: 14px;
-      padding: 20px 22px 18px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s ease;
-    }
+  .drawer-body { padding: 28px; flex: 1; }
 
-    .card:hover {
-      border-color: var(--beige-mid);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(40, 33, 28, 0.08);
-    }
+  .section-title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .8px;
+    color: var(--beige-osc); margin-bottom: 12px; margin-top: 28px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--beige-clr);
+  }
+  .section-title:first-child { margin-top: 0; }
 
-    .card-type { margin-bottom: 10px; }
+  .description-box { font-size: 13px; line-height: 1.7; color: var(--capp); font-weight: 300; }
 
-    .card-name {
-      font-size: 15px;
-      font-weight: 500;
-      line-height: 1.35;
-      margin-bottom: 5px;
-    }
+  .budget-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .budget-table th { text-align: left; font-weight: 500; font-size: 11px; color: var(--beige-osc); padding: 7px 10px; background: var(--beige-clr); border-radius: 4px; }
+  .budget-table td { padding: 10px 10px; border-bottom: 1px solid var(--beige-clr); color: var(--capp); vertical-align: top; }
+  .budget-table tr:last-child td { border-bottom: none; }
+  .budget-total {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--capp); color: var(--white); padding: 14px 16px;
+    border-radius: 10px; margin-top: 14px; font-size: 14px; font-weight: 500;
+  }
+  .budget-total .amount { font-size: 18px; }
 
-    .card-dates {
-      font-size: 11px;
-      color: var(--beige-mid);
-      font-weight: 300;
-      margin-bottom: 14px;
-    }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .info-item { background: var(--beige-clr); border-radius: 10px; padding: 12px 14px; }
+  .info-item label { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--beige-osc); display: block; margin-bottom: 4px; }
+  .info-item span { font-size: 13px; font-weight: 500; color: var(--capp); }
 
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--beige-clr); font-size: 13px; color: var(--capp); }
+  .checklist li:last-child { border-bottom: none; }
+  .check-icon { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--gris); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+  .check-icon.done { background: var(--capp); border-color: var(--capp); color: var(--white); }
 
-    .card-canales {
-      font-size: 10px;
-      color: var(--beige-mid);
-      max-width: 68%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+  .notes-box { background: var(--beige-clr); border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.6; color: var(--capp); }
 
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 20px;
-    }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .empty { text-align: center; padding: 48px 20px; color: var(--beige-osc); font-size: 14px; }
 
-    /* ── OVERLAY + PANEL ── */
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(40, 33, 28, 0.3);
-      z-index: 100;
-      backdrop-filter: blur(2px);
-    }
-    .overlay.open { display: block; }
+  .sync-status { font-size: 11px; color: var(--beige-osc); margin-top: 6px; }
 
-    .panel {
-      position: fixed;
-      top: 0;
-      right: -500px;
-      width: 500px;
-      height: 100vh;
-      background: var(--white);
-      z-index: 101;
-      overflow-y: auto;
-      transition: right 0.28s cubic-bezier(.4,0,.2,1);
-      display: flex;
-      flex-direction: column;
-    }
-    .panel.open { right: 0; }
-
-    .panel-header {
-      background: var(--cappuccino);
-      padding: 32px 28px 26px;
-      position: sticky;
-      top: 0;
-      flex-shrink: 0;
-    }
-
-    .panel-close {
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: var(--beige-mid);
-      font-size: 22px;
-      cursor: pointer;
-      padding: 4px 8px;
-      line-height: 1;
-      border-radius: 6px;
-      transition: color 0.15s;
-    }
-    .panel-close:hover { color: var(--white); }
-
-    .panel-tipo { margin-bottom: 10px; }
-
-    .panel-name {
-      font-size: 19px;
-      font-weight: 500;
-      color: var(--white);
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-
-    .panel-dates {
-      font-size: 12px;
-      color: var(--beige-mid);
-      font-weight: 300;
-    }
-
-    .panel-body { padding: 28px 28px 48px; }
-
-    .section { margin-bottom: 28px; }
-
-    .section-title {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--beige-mid);
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      margin-bottom: 10px;
-    }
-
-    .divider { height: 1px; background: var(--beige-light); margin-bottom: 28px; }
-
-    .desc {
-      font-size: 13px;
-      color: var(--cappuccino);
-      line-height: 1.75;
-      font-weight: 300;
-    }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .meta-item label {
-      display: block;
-      font-size: 10px;
-      color: var(--beige-mid);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 3px;
-    }
-    .meta-item span { font-size: 13px; font-weight: 400; }
-
-    /* Budget */
-    .budget-table { width: 100%; border-collapse: collapse; }
-    .budget-table th {
-      text-align: left;
-      font-size: 10px;
-      color: var(--beige-mid);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--beige-light);
-    }
-    .budget-table td {
-      padding: 10px 0;
-      font-size: 12px;
-      border-bottom: 1px solid var(--beige-light);
-      vertical-align: top;
-      color: var(--cappuccino);
-    }
-    .budget-table td.right { text-align: right; }
-    .budget-table td.muted { color: var(--beige-mid); }
-
-    .budget-total {
-      display: flex;
-      justify-content: space-between;
-      padding-top: 12px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .empty-msg { font-size: 12px; color: var(--beige-mid); font-weight: 300; }
-
-    /* Checklist */
-    .check-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 9px 0;
-      border-bottom: 1px solid var(--beige-light);
-    }
-    .check-box {
-      width: 16px;
-      height: 16px;
-      border-radius: 4px;
-      border: 1.5px solid var(--gris);
-      flex-shrink: 0;
-      margin-top: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-    }
-    .check-box.done { background: var(--cappuccino); border-color: var(--cappuccino); color: white; }
-    .check-text { font-size: 12px; line-height: 1.5; }
-    .check-text.done { color: var(--beige-mid); text-decoration: line-through; }
-    .check-sub { font-size: 10px; color: var(--beige-mid); margin-top: 2px; }
-
-    .notas { font-size: 12px; color: var(--beige-mid); font-style: italic; line-height: 1.7; }
-
-    /* Loading */
-    .loading { text-align: center; padding: 100px 24px; color: var(--beige-mid); font-weight: 300; font-size: 14px; }
-
-    @media (max-width: 640px) {
-      header { padding: 20px 20px; }
-      .legend { padding: 12px 20px; }
-      main { padding: 32px 16px; }
-      .panel { width: 100%; right: -100%; }
-      .cards-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+  @media (max-width: 680px) {
+    header, .filters, .main { padding-left: 20px; padding-right: 20px; }
+    .month-items { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <div class="logo">hypnos<small>healing sleep</small></div>
-  <div class="header-subtitle">calendario marketing 2026–2027</div>
+  <div class="brand">
+    <h1>hypnos</h1>
+    <p>calendario de marketing 2026 – 2027</p>
+  </div>
+  <div style="text-align:right">
+    <button class="sync-btn" id="syncBtn" onclick="syncFromSheet()">↻ sincronizar con sheet</button>
+    <div class="sync-status" id="syncStatus"></div>
+  </div>
 </header>
 
-<div class="legend">
-  <span class="legend-label">tipo</span>
-  <span class="badge" style="background:#28211C;color:#EAE6E3;">Lanzamiento</span>
-  <span class="badge" style="background:#B3AAA1;color:#28211C;">Campaña comercial</span>
-  <span class="badge" style="background:#EAE6E3;color:#28211C;border:1px solid #BDBAB7;">Campaña de marketing</span>
-  <span class="badge" style="background:#FFFFFF;color:#28211C;border:1px solid #28211C;">Hito de marca</span>
-  <span class="badge" style="background:#BDBAB7;color:#28211C;">Producción</span>
+<div class="filters">
+  <span>ver</span>
+  <button class="pill active" data-type="all"       onclick="filter('all',this)">todo</button>
+  <button class="pill"        data-type="launch"     onclick="filter('launch',this)">lanzamientos</button>
+  <button class="pill"        data-type="comercial"  onclick="filter('comercial',this)">comerciales</button>
+  <button class="pill"        data-type="marketing"  onclick="filter('marketing',this)">marketing</button>
+  <button class="pill"        data-type="hito"       onclick="filter('hito',this)">hitos de marca</button>
+  <button class="pill"        data-type="produccion" onclick="filter('produccion',this)">producción</button>
 </div>
 
-<main id="main">
-  <div class="loading">cargando calendario…</div>
-</main>
+<div class="main" id="calendar"></div>
 
-<div class="overlay" id="overlay" onclick="closePanel()"></div>
-
-<div class="panel" id="panel">
-  <div class="panel-header">
-    <button class="panel-close" onclick="closePanel()">×</button>
-    <div class="panel-tipo" id="p-tipo"></div>
-    <div class="panel-name" id="p-name"></div>
-    <div class="panel-dates" id="p-dates"></div>
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <div class="drawer-type"  id="d-type"></div>
+    <div class="drawer-name"  id="d-name"></div>
+    <div class="drawer-chips" id="d-chips"></div>
   </div>
-  <div class="panel-body" id="p-body"></div>
+  <div class="drawer-body" id="d-body"></div>
 </div>
 
 <script>
-const URLS = {
+// ── SHEET URLs (fuente de datos editable) ─────────────────────────────────
+const SHEET = {
   calendario:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1727714071&single=true&output=csv',
   presupuesto: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1188195208&single=true&output=csv',
   checklist:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSAIl0c_w4UIh6NxDB--MQ1KUYTX8DjjeYc8_kAcLO-v5F8RjrHHHdytG-5wXehM5oTivVWVQt_enWH/pub?gid=1575453415&single=true&output=csv',
 };
 
-const TYPE_STYLE = {
-  'Lanzamiento':          { bg:'#28211C', color:'#EAE6E3', border:'' },
-  'Campaña comercial':    { bg:'#B3AAA1', color:'#28211C', border:'' },
-  'Campaña de marketing': { bg:'#EAE6E3', color:'#28211C', border:'1px solid #BDBAB7' },
-  'Hito de marca':        { bg:'#FFFFFF', color:'#28211C', border:'1px solid #28211C' },
-  'Producción':           { bg:'#BDBAB7', color:'#28211C', border:'' },
+// ── DATOS (se actualizan al hacer clic en "sincronizar con sheet") ─────────
+let ITEMS = [
+
+  // ═══════════════ SEPTIEMBRE 2026 ═══════════════
+  { id:'SEP-001', month:'2026-09', type:'hito', name:'Buda Lodge by Hypnos', status:'en-curso',
+    canal:'Instagram, Glampi, redes Buda Lodge', responsable:'Tomás',
+    descripcion:'Alianza con el primer lodge de longevidad de Chile. Buda Lodge tiene cabinas antiaging y marketing vía Glampi y redes propias. Hypnos envía productos y tiene el naming de la cabina ("Sleep Cabin by Hypnos", nombre por definir). El lodge queda disponible como locación para lanzamientos y grabaciones.',
+    notas:'Nombre de la cabina por definir.',
+    budget:[
+      {concepto:'Envío y despacho de productos', monto:0},
+      {concepto:'Fotografía de la cabina', monto:0},
+      {concepto:'Naming y diseño cabina', monto:0},
+    ],
+    checklist:[
+      {t:'Confirmar nombre de la cabina', done:false, resp:'Tomás'},
+      {t:'Coordinar envío de productos al lodge', done:false, resp:'Javi'},
+      {t:'Definir activaciones en redes', done:false, resp:'Tomás'},
+      {t:'Coordinar contenido con equipo Glampi', done:false, resp:'Tomás'},
+    ]
+  },
+  { id:'SEP-002', month:'2026-09', type:'marketing', name:'Sueña tus Sueños', status:'pendiente',
+    canal:'YouTube, TikTok, Meta Ads, Instagram, Tienda física',
+    responsable:'Tomás',
+    descripcion:'Campaña de contenido omnicanal. Concepto paraguas de marca para el período. Activa en YouTube, TikTok, Meta Ads e Instagram. También con pantallas y activaciones en tienda física.',
+    notas:'Campaña paraguas — definir piezas por canal.',
+    budget:[
+      {concepto:'Meta Ads — pauta', monto:0},
+      {concepto:'Producción de piezas creativas', monto:0},
+      {concepto:'TikTok — producción de contenido', monto:0},
+    ],
+    checklist:[
+      {t:'Definir piezas por canal', done:false, resp:'Tomás'},
+      {t:'Aprobar concepto creativo', done:false, resp:'Tomás'},
+      {t:'Producir piezas de contenido', done:false, resp:'Equipo creativo'},
+      {t:'Activar campaña Meta Ads', done:false, resp:'Tomás'},
+    ]
+  },
+  { id:'SEP-003', month:'2026-09', type:'comercial', name:'Fiestas Patrias', status:'pendiente',
+    canal:'Meta Ads, Email, Instagram',
+    responsable:'Tomás',
+    descripcion:'Campaña comercial de Fiestas Patrias. 15–19 septiembre. Descuentos y activaciones de temporada.',
+    notas:'',
+    budget:[
+      {concepto:'Meta Ads', monto:0},
+      {concepto:'Email marketing', monto:0},
+      {concepto:'Piezas creativas', monto:0},
+    ],
+    checklist:[
+      {t:'Definir mecánica y descuentos', done:false, resp:'Tomás / Manuel'},
+      {t:'Preparar piezas creativas', done:false, resp:'Equipo creativo'},
+      {t:'Programar emails', done:false, resp:'Javi'},
+      {t:'Activar Meta Ads', done:false, resp:'Tomás'},
+    ]
+  },
+
+  // ═══════════════ OCTUBRE 2026 ═══════════════
+  { id:'OCT-001', month:'2026-10', type:'launch', name:'Nuevos Colchones (Endless + Embrace + Eternal)',
+    status:'pendiente',
+    canal:'Meta Ads, Instagram, Medios (publinotas), Email',
+    responsable:'Tomás',
+    descripcion:'Renovación de Endless + lanzamiento de dos nuevos colchones: Embrace y Eternal. Campaña completa: video producido por Primate Films con Longton y Kika Silva, publinotas en medios, y plan de medios pagado.',
+    notas:'Coordinar fecha con AMR, Kika y Longton. Validar presupuesto con Agustín. Cotizar plan de medios IG memes.',
+    budget:[
+      {concepto:'Producción video (Primate Films)', monto:0},
+      {concepto:'Tarifa Kika Silva (video colchón)', monto:0},
+      {concepto:'Publinotas en medios', monto:0},
+      {concepto:'Plan de medios Meta Ads', monto:0},
+    ],
+    checklist:[
+      {t:'Confirmar fecha con AMR, Kika y Longton', done:false, resp:'Tomás'},
+      {t:'Validar presupuesto producción con Agustín', done:false, resp:'Tomás'},
+      {t:'Contratar Primate Films', done:false, resp:'Tomás'},
+      {t:'Aprobar guión del video (listo)', done:true, resp:'Tomás'},
+      {t:'Cotizar plan de medios Meta Ads + IG memes', done:false, resp:'Tomás'},
+      {t:'Gestionar publinotas en medios', done:false, resp:'Tomás'},
+    ]
+  },
+  { id:'OCT-002', month:'2026-10', type:'comercial', name:'Cyber Octubre',
+    status:'pendiente',
+    canal:'Meta Ads',
+    responsable:'Tomás',
+    descripcion:'Campaña digital 100% comercial. Foco en conversión directa. Meta Ads como canal principal. Sin componente de marca — bajada de precio y urgencia.',
+    notas:'',
+    budget:[
+      {concepto:'Meta Ads — pauta Cyber Octubre', monto:0},
+      {concepto:'Piezas creativas', monto:0},
+    ],
+    checklist:[
+      {t:'Definir descuentos y mecánica', done:false, resp:'Tomás'},
+      {t:'Preparar piezas creativas Meta Ads', done:false, resp:'Equipo creativo'},
+      {t:'Activar campaña', done:false, resp:'Tomás'},
+    ]
+  },
+  { id:'OCT-003', month:'2026-10', type:'launch', name:'Sábanas algodón/bambú',
+    status:'pendiente',
+    canal:'Instagram, Email, Web',
+    responsable:'Tomás',
+    descripcion:'Lanzamiento de nueva línea de ropa de cama en mezcla algodón/bambú. Nueva propuesta de materiales para el catálogo de Hypnos.',
+    notas:'',
+    budget:[
+      {concepto:'Fotografía producto', monto:0},
+      {concepto:'Meta Ads', monto:0},
+    ],
+    checklist:[
+      {t:'Fotografía de producto', done:false, resp:'Equipo creativo'},
+      {t:'Subir a web y preparar email', done:false, resp:'Javi'},
+    ]
+  },
+  { id:'OCT-004', month:'2026-10', type:'produccion', name:'Sesión foto/video Kika — Pichilemu',
+    status:'pendiente',
+    canal:'Producción interna',
+    responsable:'Tomás',
+    descripcion:'Sesión de producción interna para la campaña Hypnos by Kika. Locación: Pichilemu (Buda Lodge o similar). Foto + video para el lanzamiento de noviembre. No es campaña pública — es la producción del contenido que se usará el mes siguiente.',
+    notas:'Buffer de 3–4 semanas antes del lanzamiento de noviembre. Coordinar con Kika.',
+    budget:[
+      {concepto:'Traslado y alojamiento equipo', monto:0},
+      {concepto:'Fotógrafo / videógrafo', monto:0},
+      {concepto:'Tarifa Kika Silva (sesión)', monto:0},
+    ],
+    checklist:[
+      {t:'Confirmar fecha con Kika', done:false, resp:'Tomás'},
+      {t:'Reservar locación en Pichilemu', done:false, resp:'Tomás'},
+      {t:'Contratar fotógrafo y videógrafo', done:false, resp:'Tomás'},
+      {t:'Preparar productos y outfits para la sesión', done:false, resp:'Javi'},
+    ]
+  },
+
+  // ═══════════════ NOVIEMBRE 2026 ═══════════════
+  { id:'NOV-001', month:'2026-11', type:'marketing', name:'Lanzamiento Hypnos by Kika',
+    status:'pendiente',
+    canal:'Instagram, TikTok, Email, Meta Ads',
+    responsable:'Tomás',
+    descripcion:'Lanzamiento oficial de la alianza Hypnos by Kika. Productos: sábanas de bambú en nuevos colores y pijamas de mujer de bambú en nuevos colores. Campaña con contenido de la sesión de Pichilemu (foto y video). Se lanza antes de Black Friday para generar momentum de marca.',
+    notas:'Depende de que la sesión de octubre esté editada y aprobada. Lanzar primera o segunda semana de noviembre.',
+    budget:[
+      {concepto:'Meta Ads — lanzamiento alianza', monto:0},
+      {concepto:'Edición video sesión Pichilemu', monto:0},
+      {concepto:'Muestras y producto para contenido', monto:0},
+    ],
+    checklist:[
+      {t:'Editar y aprobar contenido sesión Pichilemu', done:false, resp:'Tomás'},
+      {t:'Preparar campaña lanzamiento IG + TikTok', done:false, resp:'Equipo creativo'},
+      {t:'Activar Meta Ads lanzamiento', done:false, resp:'Tomás'},
+      {t:'Enviar email a base de datos', done:false, resp:'Javi'},
+    ]
+  },
+  { id:'NOV-002', month:'2026-11', type:'comercial', name:'Black Friday',
+    status:'pendiente',
+    canal:'Meta Ads, Email, Instagram, Web',
+    responsable:'Tomás',
+    descripcion:'Campaña comercial de Black Friday. ~27 noviembre. Mayor evento de descuentos del año. Se lanza después del momentum generado por el lanzamiento Hypnos by Kika.',
+    notas:'Definir descuentos y mecánica con semanas de anticipación.',
+    budget:[
+      {concepto:'Meta Ads — Black Friday', monto:0},
+      {concepto:'Email marketing', monto:0},
+      {concepto:'Piezas creativas', monto:0},
+    ],
+    checklist:[
+      {t:'Definir descuentos Black Friday', done:false, resp:'Tomás / Manuel'},
+      {t:'Preparar piezas creativas BF', done:false, resp:'Equipo creativo'},
+      {t:'Programar emails pre-BF y BF', done:false, resp:'Javi'},
+      {t:'Activar Meta Ads Black Friday', done:false, resp:'Tomás'},
+    ]
+  },
+  { id:'NOV-003', month:'2026-11', type:'launch', name:'Plumón Cooling',
+    status:'pendiente',
+    canal:'Instagram, Email, Web',
+    responsable:'Tomás',
+    descripcion:'Lanzamiento de nuevo plumón con tecnología de frescura para quienes duermen con calor.',
+    notas:'',
+    budget:[{concepto:'Fotografía producto', monto:0}],
+    checklist:[
+      {t:'Fotografía producto Plumón Cooling', done:false, resp:'Equipo creativo'},
+      {t:'Publicar en web y email', done:false, resp:'Javi'},
+    ]
+  },
+  { id:'NOV-004', month:'2026-11', type:'launch', name:'Pantuflas de verano',
+    status:'pendiente',
+    canal:'Instagram, Web',
+    responsable:'Tomás',
+    descripcion:'Lanzamiento de pantuflas de temporada estival. Complemento liviano para el verano.',
+    notas:'',
+    budget:[{concepto:'Fotografía producto', monto:0}],
+    checklist:[
+      {t:'Fotografía producto pantuflas', done:false, resp:'Equipo creativo'},
+      {t:'Publicar en web', done:false, resp:'Javi'},
+    ]
+  },
+
+  // ═══════════════ DICIEMBRE 2026 ═══════════════
+  { id:'DIC-001', month:'2026-12', type:'comercial', name:'Navidad',
+    status:'pendiente',
+    canal:'Meta Ads, Email, Instagram, Tienda física',
+    responsable:'Tomás',
+    descripcion:'Campaña de fin de año. Foco en regalos, experiencias de sueño y cierre del año. Potencial activación en tienda física.',
+    notas:'Definir si hay regalo con compra u otra mecánica.',
+    budget:[
+      {concepto:'Meta Ads — Navidad', monto:0},
+      {concepto:'Email marketing', monto:0},
+      {concepto:'Activación tienda física', monto:0},
+    ],
+    checklist:[
+      {t:'Definir mecánica Navidad (regalo con compra u otra)', done:false, resp:'Tomás'},
+      {t:'Preparar piezas creativas', done:false, resp:'Equipo creativo'},
+      {t:'Activar Meta Ads', done:false, resp:'Tomás'},
+      {t:'Activación en tienda física', done:false, resp:'Tomás / Javi'},
+    ]
+  },
+  { id:'DIC-002', month:'2026-12', type:'produccion', name:'Sesión 2 alianza Kika',
+    status:'pendiente',
+    canal:'Producción interna',
+    responsable:'Tomás',
+    descripcion:'Segunda sesión de producción de contenido para la alianza Hypnos by Kika. Contenido pensado para el verano 2027.',
+    notas:'Coordinar con Kika. Locación y fecha por definir.',
+    budget:[
+      {concepto:'Traslado y alojamiento equipo', monto:0},
+      {concepto:'Fotógrafo / videógrafo', monto:0},
+    ],
+    checklist:[
+      {t:'Confirmar fecha con Kika para sesión 2', done:false, resp:'Tomás'},
+      {t:'Definir locación y equipo', done:false, resp:'Tomás'},
+    ]
+  },
+];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+const MONTHS = [
+  {key:'2026-09',label:'Septiembre 2026'},{key:'2026-10',label:'Octubre 2026'},
+  {key:'2026-11',label:'Noviembre 2026'},{key:'2026-12',label:'Diciembre 2026'},
+  {key:'2027-01',label:'Enero 2027'},{key:'2027-02',label:'Febrero 2027'},
+  {key:'2027-03',label:'Marzo 2027'},{key:'2027-04',label:'Abril 2027'},
+  {key:'2027-05',label:'Mayo 2027'},{key:'2027-06',label:'Junio 2027'},
+  {key:'2027-07',label:'Julio 2027'},{key:'2027-08',label:'Agosto 2027'},
+  {key:'2027-09',label:'Septiembre 2027'},{key:'2027-10',label:'Octubre 2027'},
+  {key:'2027-11',label:'Noviembre 2027'},{key:'2027-12',label:'Diciembre 2027'},
+];
+
+const TYPE_LABEL = {
+  launch:'Lanzamiento', comercial:'Campaña comercial',
+  marketing:'Campaña de marketing', hito:'Hito de marca', produccion:'Producción'
+};
+const STATUS_LABEL = {
+  pendiente:'Pendiente','en-curso':'En curso', listo:'Listo',
+  ejecutada:'Ejecutada', lanzado:'Lanzado', pausado:'Pausado', desarrollo:'En desarrollo'
 };
 
-const STATUS = {
-  'Sin empezar': { color:'#BDBAB7', bg:'#F4F3F2' },
-  'En curso':    { color:'#8B6914', bg:'#FDF4E3' },
-  'Listo':       { color:'#3A6B3E', bg:'#EBF4EC' },
-  'Pausado':     { color:'#8B3A3A', bg:'#F9ECEC' },
-};
+function clp(n) { return n ? '$'+Number(n).toLocaleString('es-CL') : '—'; }
 
-const MONTH_ORDER = ['Sep 2026','Oct 2026','Nov 2026','Dic 2026','Ene 2027','Feb 2027','Mar 2027','Abr 2027','May 2027','Jun 2027','Jul 2027','Ago 2027','Sep 2027','Oct 2027','Nov 2027','Dic 2027'];
+let activeFilter = 'all';
 
-let cal = [], pres = [], chk = [];
+// ── RENDER CALENDAR ───────────────────────────────────────────────────────
+function render() {
+  const items = ITEMS.filter(i => activeFilter==='all' || i.type===activeFilter);
+  let html = '';
+  MONTHS.forEach(m => {
+    const mis = items.filter(i=>i.month===m.key);
+    if (!mis.length) return;
+    html += `<div class="month-block">
+      <div class="month-label">${m.label}</div>
+      <div class="month-items">`;
+    mis.forEach(item => {
+      const total = item.budget.reduce((s,b)=>s+(b.monto||0),0);
+      html += `
+        <div class="item-card ${item.type}" onclick="openDrawer('${item.id}')">
+          <div class="card-type">${TYPE_LABEL[item.type]||item.type}</div>
+          <div class="card-name">${item.name}</div>
+          <div class="card-meta">
+            <span><span class="status-dot ${item.status}"></span>${STATUS_LABEL[item.status]||item.status}</span>
+            ${total ? `<span class="budget-badge">${clp(total)}</span>` : ''}
+          </div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  });
+  document.getElementById('calendar').innerHTML = html||'<div class="empty">No hay ítems para este filtro.</div>';
+}
 
+function filter(type, btn) {
+  activeFilter = type;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// ── DRAWER ────────────────────────────────────────────────────────────────
+function openDrawer(id) {
+  const item = ITEMS.find(i=>i.id===id); if (!item) return;
+  document.getElementById('d-type').textContent = TYPE_LABEL[item.type]||item.type;
+  document.getElementById('d-name').textContent = item.name;
+  document.getElementById('d-chips').innerHTML = [
+    MONTHS.find(m=>m.key===item.month)?.label||item.month,
+    STATUS_LABEL[item.status]||item.status,
+    item.responsable
+  ].map(c=>`<span class="drawer-chip">${c}</span>`).join('');
+
+  const total = item.budget.reduce((s,b)=>s+(b.monto||0),0);
+  let body = '';
+
+  if (item.descripcion) {
+    body += `<div class="section-title">descripción</div>
+    <div class="description-box">${item.descripcion}</div>`;
+  }
+
+  body += `<div class="section-title">información</div>
+  <div class="info-grid">
+    <div class="info-item"><label>Canal</label><span>${item.canal}</span></div>
+    <div class="info-item"><label>Responsable</label><span>${item.responsable}</span></div>
+    <div class="info-item"><label>Estado</label><span><span class="status-dot ${item.status}"></span> ${STATUS_LABEL[item.status]||item.status}</span></div>
+    <div class="info-item"><label>Período</label><span>${MONTHS.find(m=>m.key===item.month)?.label||item.month}</span></div>
+  </div>`;
+
+  body += `<div class="section-title">presupuesto</div>`;
+  if (item.budget.length) {
+    body += `<table class="budget-table">
+      <tr><th>Concepto</th><th style="text-align:right">Monto</th></tr>`;
+    item.budget.forEach(b=>{
+      body += `<tr><td>${b.concepto}</td><td style="text-align:right">${clp(b.monto)}</td></tr>`;
+    });
+    body += `</table><div class="budget-total"><span>Total</span><span class="amount">${clp(total)||'—'}</span></div>`;
+  } else {
+    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin presupuesto cargado. Editar en Google Sheet.</div>`;
+  }
+
+  if (item.checklist?.length) {
+    const done = item.checklist.filter(c=>c.done).length;
+    body += `<div class="section-title">checklist (${done}/${item.checklist.length})</div><ul class="checklist">`;
+    item.checklist.forEach(c=>{
+      body += `<li>
+        <span class="check-icon ${c.done?'done':''}">${c.done?'✓':''}</span>
+        <span>${c.t}${c.resp?` <span style="color:var(--beige-osc);font-size:11px">— ${c.resp}</span>`:''}</span>
+      </li>`;
+    });
+    body += `</ul>`;
+  }
+
+  if (item.notas) {
+    body += `<div class="section-title">notas</div><div class="notes-box">${item.notas}</div>`;
+  }
+
+  document.getElementById('d-body').innerHTML = body;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer').scrollTop = 0;
+}
+
+function closeDrawer() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+// ── SYNC DESDE SHEET ─────────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.replace(/\r/g,'').split('\n');
   const headers = splitLine(lines[0]);
-  return lines.slice(1).filter(l => l.trim()).map(l => {
-    const vals = splitLine(l);
-    const obj = {};
-    headers.forEach((h,i) => obj[h.trim()] = (vals[i]||'').trim().replace(/^"|"$/g,''));
+  return lines.slice(1).filter(l=>l.trim()).map(l=>{
+    const v = splitLine(l), obj={};
+    headers.forEach((h,i)=>obj[h.trim()]=(v[i]||'').trim().replace(/^"|"$/g,''));
     return obj;
   });
 }
-
 function splitLine(line) {
-  const res = []; let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === '"') { inQ = !inQ; }
-    else if (line[i] === ',' && !inQ) { res.push(cur); cur = ''; }
-    else cur += line[i];
+  const r=[]; let c='', q=false;
+  for(let i=0;i<line.length;i++){
+    if(line[i]==='"'){q=!q;}
+    else if(line[i]===','&&!q){r.push(c);c='';}
+    else c+=line[i];
   }
-  res.push(cur);
-  return res;
+  r.push(c); return r;
 }
 
-function money(v) {
-  const n = parseFloat((v||'').replace(/[^0-9.-]/g,''));
-  if (!n || isNaN(n)) return '—';
-  return '$ ' + n.toLocaleString('es-CL');
-}
-
-function badgeHtml(tipo) {
-  const s = TYPE_STYLE[tipo] || { bg:'#EAE6E3', color:'#28211C', border:'' };
-  return `<span class="badge" style="background:${s.bg};color:${s.color};${s.border?'border:'+s.border:''}">${tipo||'—'}</span>`;
-}
-
-async function get(url) {
-  const r = await fetch(url); return parseCSV(await r.text());
-}
-
-async function init() {
+async function syncFromSheet() {
+  const btn = document.getElementById('syncBtn');
+  const status = document.getElementById('syncStatus');
+  btn.disabled = true; btn.textContent = '↻ sincronizando…';
+  status.textContent = '';
   try {
-    [cal, pres, chk] = await Promise.all([get(URLS.calendario), get(URLS.presupuesto), get(URLS.checklist)]);
-    render();
-  } catch(e) {
-    document.getElementById('main').innerHTML = '<div class="loading">error al cargar los datos. verifica que la Sheet esté publicada.</div>';
-  }
-}
+    const [calRows, presRows, chkRows] = await Promise.all([
+      fetch(SHEET.calendario).then(r=>r.text()).then(parseCSV),
+      fetch(SHEET.presupuesto).then(r=>r.text()).then(parseCSV),
+      fetch(SHEET.checklist).then(r=>r.text()).then(parseCSV),
+    ]);
 
-function render() {
-  const byMonth = {};
-  cal.forEach(r => { if (r.id) { (byMonth[r.mes] = byMonth[r.mes]||[]).push(r); } });
-
-  const sorted = Object.keys(byMonth).sort((a,b) => {
-    const ai = MONTH_ORDER.indexOf(a), bi = MONTH_ORDER.indexOf(b);
-    return (ai<0?99:ai)-(bi<0?99:bi);
-  });
-
-  document.getElementById('main').innerHTML = sorted.map(mes => {
-    const items = byMonth[mes];
-    const cards = items.map(item => {
-      const st = STATUS[item.estado] || STATUS['Sin empezar'];
-      return `
-        <div class="card" onclick="openPanel('${item.id}')">
-          <div class="card-type">${badgeHtml(item.tipo)}</div>
-          <div class="card-name">${item.nombre}</div>
-          <div class="card-dates">${item.fecha_inicio}${item.fecha_fin && item.fecha_fin!==item.fecha_inicio?' → '+item.fecha_fin:''}</div>
-          <div class="card-footer">
-            <div class="card-canales">${item.canales||''}</div>
-            <span class="status-pill" style="color:${st.color};background:${st.bg}">
-              <span class="status-dot" style="background:${st.color}"></span>${item.estado}
-            </span>
-          </div>
-        </div>`;
-    }).join('');
-
-    return `
-      <div class="month-section">
-        <div class="month-header">
-          <div class="month-name">${mes.toLowerCase()}</div>
-          <div class="month-count">${items.length} ${items.length===1?'ítem':'ítems'}</div>
-        </div>
-        <div class="cards-grid">${cards}</div>
-      </div>`;
-  }).join('');
-}
-
-function openPanel(id) {
-  const item = cal.find(r => r.id===id); if (!item) return;
-  const itemPres = pres.filter(r => r.id===id);
-  const itemChk  = chk.filter(r => r.id===id);
-
-  document.getElementById('p-tipo').innerHTML = badgeHtml(item.tipo);
-  document.getElementById('p-name').textContent = item.nombre;
-  document.getElementById('p-dates').textContent = item.fecha_inicio + (item.fecha_fin && item.fecha_fin!==item.fecha_inicio?' → '+item.fecha_fin:'');
-
-  const st = STATUS[item.estado] || STATUS['Sin empezar'];
-
-  let html = '';
-
-  // Descripción
-  if (item.descripcion) {
-    html += `<div class="section">
-      <div class="section-title">descripción</div>
-      <div class="desc">${item.descripcion}</div>
-    </div><div class="divider"></div>`;
-  }
-
-  // Meta
-  html += `<div class="section">
-    <div class="meta-grid">
-      <div class="meta-item"><label>responsable</label><span>${item.responsable||'—'}</span></div>
-      <div class="meta-item"><label>estado</label><span style="color:${st.color};font-weight:500">${item.estado||'—'}</span></div>
-      <div class="meta-item" style="grid-column:1/-1"><label>canales</label><span>${item.canales||'—'}</span></div>
-    </div>
-  </div><div class="divider"></div>`;
-
-  // Presupuesto
-  html += `<div class="section"><div class="section-title">presupuesto</div>`;
-  if (itemPres.length) {
-    let total = 0;
-    html += `<table class="budget-table">
-      <thead><tr><th>concepto</th><th>proveedor</th><th>estado pago</th><th style="text-align:right">monto</th></tr></thead><tbody>`;
-    itemPres.forEach(p => {
-      const n = parseFloat((p.monto||'').replace(/[^0-9.-]/g,''))||0;
-      total += n;
-      html += `<tr>
-        <td>${p.concepto}</td>
-        <td class="muted">${p.proveedor||'—'}</td>
-        <td class="muted">${p.estado_pago||'—'}</td>
-        <td class="right">${money(p.monto)}</td>
-      </tr>`;
+    ITEMS = calRows.filter(r=>r.id).map(r=>{
+      const monthMap = {
+        'Sep 2026':'2026-09','Oct 2026':'2026-10','Nov 2026':'2026-11','Dic 2026':'2026-12',
+        'Ene 2027':'2027-01','Feb 2027':'2027-02','Mar 2027':'2027-03','Abr 2027':'2027-04',
+        'May 2027':'2027-05','Jun 2027':'2027-06','Jul 2027':'2027-07','Ago 2027':'2027-08',
+        'Sep 2027':'2027-09','Oct 2027':'2027-10','Nov 2027':'2027-11','Dic 2027':'2027-12',
+      };
+      const typeMap = {
+        'Lanzamiento':'launch','Campaña comercial':'comercial',
+        'Campaña de marketing':'marketing','Hito de marca':'hito','Producción':'produccion'
+      };
+      const statusMap = {
+        'Sin empezar':'pendiente','En curso':'en-curso','Listo':'listo','Pausado':'pausado'
+      };
+      return {
+        id: r.id,
+        month: monthMap[r.mes] || '2026-09',
+        type: typeMap[r.tipo] || 'hito',
+        name: r.nombre || '',
+        status: statusMap[r.estado] || 'pendiente',
+        canal: r.canales || '',
+        responsable: r.responsable || '',
+        descripcion: r.descripcion || '',
+        notas: r.notas || '',
+        budget: presRows.filter(p=>p.id===r.id).map(p=>({concepto:p.concepto, monto:parseFloat(p.monto)||0})),
+        checklist: chkRows.filter(c=>c.id===r.id).map(c=>({t:c.tarea, done:c.hecho==='TRUE', resp:c.responsable})),
+      };
     });
-    html += `</tbody></table>
-    <div class="budget-total"><span>total</span><span>${total>0?money(String(total)): '—'}</span></div>`;
-  } else {
-    html += `<div class="empty-msg">sin presupuesto cargado aún.</div>`;
-  }
-  html += `</div><div class="divider"></div>`;
 
-  // Checklist
-  html += `<div class="section"><div class="section-title">checklist</div>`;
-  if (itemChk.length) {
-    html += itemChk.map(c => {
-      const done = c.hecho==='TRUE';
-      return `<div class="check-item">
-        <div class="check-box ${done?'done':''}">${done?'✓':''}</div>
-        <div>
-          <div class="check-text ${done?'done':''}">${c.tarea}</div>
-          ${c.responsable?`<div class="check-sub">${c.responsable}${c.fecha_limite?' · '+c.fecha_limite:''}</div>`:''}
-        </div>
-      </div>`;
-    }).join('');
-  } else {
-    html += `<div class="empty-msg">sin tareas cargadas aún.</div>`;
+    render();
+    status.textContent = 'sincronizado ' + new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+    status.style.color = '#6aaa6a';
+  } catch(e) {
+    status.textContent = 'error al sincronizar — revisa conexión o publicación de la Sheet';
+    status.style.color = '#c0504d';
+    console.error(e);
   }
-  html += `</div>`;
-
-  // Notas
-  if (item.notas) {
-    html += `<div class="divider"></div>
-    <div class="section">
-      <div class="section-title">notas</div>
-      <div class="notas">${item.notas}</div>
-    </div>`;
-  }
-
-  document.getElementById('p-body').innerHTML = html;
-  document.getElementById('overlay').classList.add('open');
-  document.getElementById('panel').classList.add('open');
-  document.getElementById('panel').scrollTop = 0;
+  btn.disabled = false; btn.textContent = '↻ sincronizar con sheet';
 }
 
-function closePanel() {
-  document.getElementById('overlay').classList.remove('open');
-  document.getElementById('panel').classList.remove('open');
-}
-
-document.addEventListener('keydown', e => { if (e.key==='Escape') closePanel(); });
-
-init();
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
+render();
 </script>
 </body>
 </html>
