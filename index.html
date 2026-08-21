@@ -158,11 +158,11 @@
   .info-item label { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--beige-osc); display: block; margin-bottom: 4px; }
   .info-item span { font-size: 13px; font-weight: 500; color: var(--capp); }
 
-  .checklist { list-style: none; }
-  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--beige-clr); font-size: 13px; color: var(--capp); }
-  .checklist li:last-child { border-bottom: none; }
-  .check-icon { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--gris); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
-  .check-icon.done { background: var(--capp); border-color: var(--capp); color: var(--white); }
+  /* Barra de progreso checklist */
+  .progress-wrap { display: flex; align-items: center; gap: 12px; }
+  .progress-bar { flex: 1; height: 6px; background: var(--beige-clr); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--capp); border-radius: 10px; transition: width .4s; }
+  .progress-label { font-size: 12px; color: var(--beige-osc); white-space: nowrap; }
 
   .notes-box { background: var(--beige-clr); border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.6; color: var(--capp); }
 
@@ -284,18 +284,16 @@ async function cargarDatos() {
 
     // Mapear campos del sheet a estructura interna
     ITEMS = data.items.map(r => ({
-      id:           r.id,
-      month:        MONTH_MAP[r.mes] || r.mes,
-      type:         TYPE_MAP[r.tipo] || 'hito',
-      name:         r.nombre || '',
-      status:       STATUS_MAP[r.estado] || 'pendiente',
-      canal:        r.canales || '',
-      responsable:  r.responsable || '',
-      descripcion:  r.descripcion || '',
-      notas:        r.notas || '',
-      checklist:    (r.checklist || []).map(c => ({ t: c.tarea, done: c.done, resp: c.responsable })),
-      gastosReales: r.gastosReales || [],
-      totalRealMes: r.totalRealMes || 0,
+      id:          r.id,
+      month:       MONTH_MAP[r.mes] || r.mes,
+      type:        TYPE_MAP[r.tipo] || 'hito',
+      name:        r.nombre || '',
+      status:      STATUS_MAP[r.estado] || 'pendiente',
+      canal:       r.canales || '',
+      descripcion: r.descripcion || '',
+      checklist:   (r.checklist || []).map(c => ({ t: c.tarea, done: c.done })),
+      gastos:      r.gastos || [],
+      totalGastos: r.totalGastos || 0,
     }));
 
     render();
@@ -362,8 +360,7 @@ function openDrawer(id) {
   document.getElementById('d-name').textContent = item.name;
   document.getElementById('d-chips').innerHTML = [
     MONTHS.find(m => m.key === item.month)?.label || item.month,
-    STATUS_LABEL[item.status] || item.status,
-    item.responsable
+    STATUS_LABEL[item.status] || item.status
   ].map(c => `<span class="drawer-chip">${c}</span>`).join('');
 
   let body = '';
@@ -376,49 +373,41 @@ function openDrawer(id) {
   body += `<div class="section-title">información</div>
   <div class="info-grid">
     <div class="info-item"><label>Canal</label><span>${item.canal || '—'}</span></div>
-    <div class="info-item"><label>Responsable</label><span>${item.responsable || '—'}</span></div>
     <div class="info-item"><label>Estado</label><span><span class="status-dot ${item.status}"></span> ${STATUS_LABEL[item.status] || item.status}</span></div>
     <div class="info-item"><label>Período</label><span>${MONTHS.find(m => m.key === item.month)?.label || item.month}</span></div>
   </div>`;
 
-  // Gastos reales del mes (desde presupuesto Sheet)
-  body += `<div class="section-title">gasto real del mes</div>`;
-  if (item.gastosReales && item.gastosReales.length) {
+  // Hitos / progreso (checklist)
+  if (item.checklist?.length) {
+    const done = item.checklist.filter(c => c.done).length;
+    const pct  = Math.round(done / item.checklist.length * 100);
+    body += `<div class="section-title">hitos</div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span class="progress-label">${done} de ${item.checklist.length} completados</span>
+    </div>`;
+  }
+
+  // Gastos por campaña (desde presupuesto Sheet, filtrado por columna K)
+  body += `<div class="section-title">presupuesto</div>`;
+  if (item.gastos && item.gastos.length) {
     body += `<table class="budget-table">
-      <tr><th>Ítem</th><th>Categoría</th><th>Tipo</th><th style="text-align:right">Monto</th></tr>`;
-    item.gastosReales.forEach(g => {
+      <tr><th>Ítem</th><th>Categoría</th><th style="text-align:right">Monto</th></tr>`;
+    item.gastos.forEach(g => {
       const monto = g.tipo === 'Canje' && g.costoNeto > 0 ? g.costoNeto : g.monto;
       const tipoTag = g.tipo === 'Canje'
-        ? `<span style="font-size:10px;background:var(--beige-clr);padding:2px 7px;border-radius:20px;color:var(--beige-osc)">canje</span>`
+        ? ` <span style="font-size:10px;background:var(--beige-clr);padding:2px 7px;border-radius:20px;color:var(--beige-osc)">canje</span>`
         : '';
-      const estadoColor = g.estado === 'Pagado' ? 'var(--capp)' : 'var(--beige-osc)';
       body += `<tr>
-        <td>${g.item}${g.detalle ? `<br><span style="font-size:11px;color:var(--beige-osc)">${g.detalle}</span>` : ''}</td>
+        <td>${g.item}${tipoTag}</td>
         <td style="font-size:11px;color:var(--beige-osc)">${g.categoria || '—'}</td>
-        <td>${tipoTag}</td>
-        <td style="text-align:right;color:${estadoColor};font-weight:500">${clp(monto)}</td>
+        <td style="text-align:right;font-weight:500">${clp(monto)}</td>
       </tr>`;
     });
     body += `</table>
-    <div class="budget-total"><span>Total mes</span><span class="amount">${clp(item.totalRealMes)}</span></div>`;
+    <div class="budget-total"><span>Total campaña</span><span class="amount">${clp(item.totalGastos)}</span></div>`;
   } else {
-    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin gastos registrados para este mes en el presupuesto.</div>`;
-  }
-
-  if (item.checklist?.length) {
-    const done = item.checklist.filter(c => c.done).length;
-    body += `<div class="section-title">checklist (${done}/${item.checklist.length})</div><ul class="checklist">`;
-    item.checklist.forEach(c => {
-      body += `<li>
-        <span class="check-icon ${c.done ? 'done' : ''}">${c.done ? '✓' : ''}</span>
-        <span>${c.t}${c.resp ? ` <span style="color:var(--beige-osc);font-size:11px">— ${c.resp}</span>` : ''}</span>
-      </li>`;
-    });
-    body += `</ul>`;
-  }
-
-  if (item.notas) {
-    body += `<div class="section-title">notas</div><div class="notes-box">${item.notas}</div>`;
+    body += `<div class="notes-box" style="color:var(--beige-osc)">Sin gastos asignados a esta campaña.</div>`;
   }
 
   document.getElementById('d-body').innerHTML = body;
