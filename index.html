@@ -335,7 +335,7 @@ function render() {
           <div class="card-name">${item.name}</div>
           <div class="card-meta">
             <span><span class="status-dot ${item.status}"></span>${STATUS_LABEL[item.status] || item.status}</span>
-            ${item.totalRealMes ? `<span class="budget-badge">${clp(item.totalRealMes)}</span>` : ''}
+            ${item.totalGastos ? `<span class="budget-badge">${clp(item.totalGastos)}</span>` : ''}
           </div>
         </div>`;
     });
