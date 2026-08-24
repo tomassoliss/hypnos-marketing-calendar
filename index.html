@@ -176,14 +176,16 @@
 
   /* Presupuesto colapsable */
   .section-title-toggle {
-    font-size: 11px; text-transform: uppercase; letter-spacing: .8px;
-    color: var(--beige-osc); margin-bottom: 0; margin-top: 28px;
-    padding-bottom: 8px; border-bottom: 1px solid var(--beige-clr);
+    font-size: 13px; font-weight: 500; letter-spacing: .2px;
+    color: var(--capp); margin-bottom: 0; margin-top: 28px;
+    padding: 12px 14px; border-radius: 10px; background: var(--beige-clr);
     display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;
+    transition: background .15s;
   }
-  .section-title-toggle:hover { color: var(--capp); }
-  .section-title-toggle .ppto-total { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--capp); text-transform: none; letter-spacing: 0; }
-  .section-title-toggle .toggle-arrow { font-size: 11px; color: var(--beige-osc); margin-left: 4px; }
+  .section-title-toggle:hover { background: #dedad6; }
+  .section-title-toggle .ppto-note { font-size: 11px; font-weight: 400; color: var(--beige-osc); }
+  .section-title-toggle .ppto-total { margin-left: auto; font-size: 15px; font-weight: 600; color: var(--capp); }
+  .section-title-toggle .toggle-arrow { font-size: 12px; color: var(--beige-osc); margin-left: 6px; }
   .collapsible-body { padding-top: 14px; }
 
   .empty { text-align: center; padding: 48px 20px; color: var(--beige-osc); font-size: 14px; }
@@ -421,7 +423,7 @@ function openDrawer(id) {
   const pptoId = 'ppto-' + item.id;
   body += `<div class="section-title-toggle" onclick="togglePpto('${pptoId}')">
     presupuesto
-    <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(productos: costo neto)</span>
+    <span class="ppto-note">(productos: costo neto)</span>
     ${item.totalGastos ? `<span class="ppto-total">${clp(item.totalGastos)}</span>` : ''}
     <span class="toggle-arrow" id="arrow-${pptoId}">▾</span>
   </div>
