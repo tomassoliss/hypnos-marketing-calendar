@@ -166,6 +166,26 @@
 
   .notes-box { background: var(--beige-clr); border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.6; color: var(--capp); }
 
+  /* Hitos individuales */
+  .hitos-list { display: flex; flex-direction: column; gap: 7px; margin-top: 12px; }
+  .hito-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; background: var(--beige-clr); }
+  .hito-dot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--gris); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; color: transparent; }
+  .hito-item.done .hito-dot { background: var(--capp); border-color: var(--capp); color: var(--white); }
+  .hito-text { font-size: 13px; color: var(--capp); line-height: 1.3; }
+  .hito-item.done .hito-text { color: var(--beige-osc); text-decoration: line-through; }
+
+  /* Presupuesto colapsable */
+  .section-title-toggle {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .8px;
+    color: var(--beige-osc); margin-bottom: 0; margin-top: 28px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--beige-clr);
+    display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;
+  }
+  .section-title-toggle:hover { color: var(--capp); }
+  .section-title-toggle .ppto-total { margin-left: auto; font-size: 13px; font-weight: 600; color: var(--capp); text-transform: none; letter-spacing: 0; }
+  .section-title-toggle .toggle-arrow { font-size: 11px; color: var(--beige-osc); margin-left: 4px; }
+  .collapsible-body { padding-top: 14px; }
+
   .empty { text-align: center; padding: 48px 20px; color: var(--beige-osc); font-size: 14px; }
 
   @media (max-width: 680px) {
@@ -385,12 +405,28 @@ function openDrawer(id) {
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
       <span class="progress-label">${done} de ${item.checklist.length} completados</span>
-    </div>`;
+    </div>
+    <div class="hitos-list">`;
+    item.checklist.forEach(c => {
+      body += `<div class="hito-item${c.done ? ' done' : ''}">
+        <div class="hito-dot">${c.done ? '✓' : ''}</div>
+        <span class="hito-text">${c.t}</span>
+      </div>`;
+    });
+    body += `</div>`;
   }
 
-  // Gastos por campaña (desde presupuesto Sheet, filtrado por columna K)
-  body += `<div class="section-title">presupuesto <span style="font-size:10px;font-weight:400;color:var(--beige-osc);text-transform:none;letter-spacing:0">(productos: se considera costo neto)</span></div>`;
-  if (item.gastos && item.gastos.length) {
+  // Presupuesto colapsable
+  const hasGastos = item.gastos && item.gastos.length;
+  const pptoId = 'ppto-' + item.id;
+  body += `<div class="section-title-toggle" onclick="togglePpto('${pptoId}')">
+    presupuesto
+    <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(productos: costo neto)</span>
+    ${item.totalGastos ? `<span class="ppto-total">${clp(item.totalGastos)}</span>` : ''}
+    <span class="toggle-arrow" id="arrow-${pptoId}">▾</span>
+  </div>
+  <div id="${pptoId}" class="collapsible-body" style="display:none">`;
+  if (hasGastos) {
     body += `<table class="budget-table">
       <tr><th>Ítem</th><th>Categoría</th><th style="text-align:right">Monto</th></tr>`;
     item.gastos.forEach(g => {
@@ -409,11 +445,20 @@ function openDrawer(id) {
   } else {
     body += `<div class="notes-box" style="color:var(--beige-osc)">Sin gastos asignados a esta campaña.</div>`;
   }
+  body += `</div>`;
 
   document.getElementById('d-body').innerHTML = body;
   document.getElementById('overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawer').scrollTop = 0;
+}
+
+function togglePpto(id) {
+  const el = document.getElementById(id);
+  const arrow = document.getElementById('arrow-' + id);
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  arrow.textContent = open ? '▾' : '▴';
 }
 
 function closeDrawer() {
