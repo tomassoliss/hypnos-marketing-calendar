@@ -389,7 +389,7 @@ function openDrawer(id) {
   }
 
   // Gastos por campaña (desde presupuesto Sheet, filtrado por columna K)
-  body += `<div class="section-title">presupuesto</div>`;
+  body += `<div class="section-title">presupuesto <span style="font-size:10px;font-weight:400;color:var(--beige-osc);text-transform:none;letter-spacing:0">(productos: se considera costo neto)</span></div>`;
   if (item.gastos && item.gastos.length) {
     body += `<table class="budget-table">
       <tr><th>Ítem</th><th>Categoría</th><th style="text-align:right">Monto</th></tr>`;
