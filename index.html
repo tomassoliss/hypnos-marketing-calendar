@@ -485,6 +485,15 @@ function renderTimeline() {
     grupos[key].items.push(item);
   });
 
+  const today = new Date();
+  const todayPct = (today >= rangeStart && today <= rangeEnd)
+    ? (today - rangeStart) / totalMs * 100 : null;
+
+  const todayLine = todayPct !== null
+    ? `<div style="position:absolute;left:${todayPct}%;top:0;bottom:0;width:1.5px;background:#6aaa6a;z-index:2;pointer-events:none">
+         <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:#6aaa6a;white-space:nowrap;font-weight:500">hoy</div>
+       </div>` : '';
+
   let html = `<div class="timeline-wrap">
     <div style="position:relative;height:28px;margin-left:220px;margin-bottom:12px;border-bottom:1px solid var(--gris)">
       ${mHeaders}
@@ -503,8 +512,9 @@ function renderTimeline() {
           <span class="tl-type">${TYPE_LABEL[item.type] || item.type}</span>
           ${item.name}
         </div>
-        <div class="tl-grid-row">
-          <div class="tl-bar ${item.type}" style="left:${left}%;width:${width}%" title="${item.name}">
+        <div class="tl-grid-row" style="position:relative">
+          ${todayLine}
+          <div class="tl-bar ${item.type}" style="left:${left}%;width:${width}%;position:absolute" title="${item.name}">
             <span class="tl-bar-name">${item.name}</span>
           </div>
         </div>
